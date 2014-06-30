@@ -12,6 +12,8 @@
 		C640970319608EF6007C9096 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C640970119608EF6007C9096 /* Main.storyboard */; };
 		C640970519608EF6007C9096 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C640970419608EF6007C9096 /* Images.xcassets */; };
 		C640971119608EF6007C9096 /* UEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640971019608EF6007C9096 /* UEventsTests.swift */; };
+		C640971B1960923E007C9096 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C640971A1960923E007C9096 /* FacebookSDK.framework */; };
+		C6B5FE481960F7210062ECBC /* EventsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B5FE471960F7210062ECBC /* EventsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,9 @@
 		C640970A19608EF6007C9096 /* UEventsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UEventsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C640970F19608EF6007C9096 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C640971019608EF6007C9096 /* UEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UEventsTests.swift; sourceTree = "<group>"; };
+		C640971A1960923E007C9096 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FacebookSDK.framework; path = ../../../../Documents/FacebookSDK/FacebookSDK.framework; sourceTree = "<group>"; };
+		C6B5FE471960F7210062ECBC /* EventsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsController.swift; sourceTree = "<group>"; };
+		C6FDC3931960D2F200EF423C /* UEvents-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UEvents-Bridging-Header.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +46,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C640971B1960923E007C9096 /* FacebookSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +63,7 @@
 		C64096EF19608EF6007C9096 = {
 			isa = PBXGroup;
 			children = (
+				C640971A1960923E007C9096 /* FacebookSDK.framework */,
 				C64096FA19608EF6007C9096 /* UEvents */,
 				C640970D19608EF6007C9096 /* UEventsTests */,
 				C64096F919608EF6007C9096 /* Products */,
@@ -78,8 +85,10 @@
 				C64096FD19608EF6007C9096 /* AppDelegate.swift */,
 				C64096FF19608EF6007C9096 /* ViewController.swift */,
 				C640970119608EF6007C9096 /* Main.storyboard */,
+				C6B5FE471960F7210062ECBC /* EventsController.swift */,
 				C640970419608EF6007C9096 /* Images.xcassets */,
 				C64096FB19608EF6007C9096 /* Supporting Files */,
+				C6FDC3931960D2F200EF423C /* UEvents-Bridging-Header.h */,
 			);
 			path = UEvents;
 			sourceTree = "<group>";
@@ -208,6 +217,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6B5FE481960F7210062ECBC /* EventsController.swift in Sources */,
 				C640970019608EF6007C9096 /* ViewController.swift in Sources */,
 				C64096FE19608EF6007C9096 /* AppDelegate.swift in Sources */,
 			);
@@ -327,9 +337,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEFINES_MODULE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/ssapra/Documents/FacebookSDK,
+				);
 				INFOPLIST_FILE = UEvents/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "UEvents/UEvents-Bridging-Header.h";
 			};
 			name = Debug;
 		};
@@ -338,9 +355,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				DEFINES_MODULE = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/ssapra/Documents/FacebookSDK,
+				);
 				INFOPLIST_FILE = UEvents/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "UEvents/UEvents-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -399,6 +423,7 @@
 				C640971619608EF6007C9096 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C640971719608EF6007C9096 /* Build configuration list for PBXNativeTarget "UEventsTests" */ = {
 			isa = XCConfigurationList;
@@ -407,6 +432,7 @@
 				C640971919608EF6007C9096 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
