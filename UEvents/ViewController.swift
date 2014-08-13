@@ -9,25 +9,82 @@
 import Foundation
 import UIKit
 
-class ViewController: UIViewController, FBLoginViewDelegate{
-    var fbl: FBLoginView = FBLoginView()
-    @IBOutlet var loginView : FBLoginView
+class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, UINavigationControllerDelegate {
+    
+    var pageViewController : UIPageViewController = UIPageViewController()
+    var appearanceController:AppearanceController = AppearanceController()
+    var pageTitles:NSArray = []
+    var pageImages:NSArray = []
+    @IBOutlet var pageControl:UIPageControl?
     override func viewDidLoad() {
         super.viewDidLoad()
-        fbl.delegate = self
-        loginView.readPermissions = ["public_profile", "email", "user_friends"]
-        // Do any additional setup after loading the view, typically from a nib.
+        pageTitles = ["", ""]
+        pageImages = ["Home1.png", "Home2.png"]
+        self.pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
+        self.pageViewController.dataSource = self
+        self.navigationController.delegate = self
+        var startingViewController:PageContentViewController = self.viewControllerAtIndex(0)!
+        var viewControllers:NSArray = [startingViewController]
+        self.pageViewController.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: nil)
+        self.pageViewController.view.frame = CGRectMake(0, 0, appearanceController.width, appearanceController.height + 40)
+        self.addChildViewController(pageViewController)
+        self.view.addSubview(pageViewController.view)
+        self.pageViewController.didMoveToParentViewController(self)
+        var colors:Dictionary<String, Dictionary<String, String>> = appearanceController.getColors()
+        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
+        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        var navBarSize:CGSize = self.navigationController.navigationBar.bounds.size
+        var origin:CGPoint = CGPointMake( navBarSize.width/2, navBarSize.height/2 )
+        self.navigationController.navigationBarHidden = true
+        pageControl!.numberOfPages = 3
+        pageControl!.pageIndicatorTintColor = UIColor.lightGrayColor()
+        pageControl!.currentPageIndicatorTintColor = UIColor.whiteColor()
+        pageControl!.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        pageControl!.frame = CGRectMake(0,0, pageControl!.bounds.size.width, pageControl!.bounds.size.height)
+        self.navigationController.delegate = self
+    }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.screenName = "Login"
+    }
+    override func shouldAutorotate() -> Bool {
+        return appearanceController.isIPAD()
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
-    func loginViewShowingLoggedInUser(loginView: FBLoginView) {
+    func pageViewController(pageViewController: UIPageViewController!, viewControllerBeforeViewController viewController: UIViewController!) -> UIViewController!{
+        var pcvc:PageContentViewController = viewController as PageContentViewController
+        var index:UInt = pcvc.pageIndex
+        self.pageControl!.currentPage = Int(index)
+        if ((index == 0) || (index == Foundation.NSNotFound)){
+            return nil;
+        }
+        index--;
+        return self.viewControllerAtIndex(Int(index))
     }
-    func loginViewFetchedUserInfo(loginView: FBLoginView?, user: FBGraphUser) {
-        let secondViewController = self.storyboard.instantiateViewControllerWithIdentifier("EventsController") as EventsController
-        self.navigationController.pushViewController(secondViewController, animated: true)
+    func pageViewController(pageViewController: UIPageViewController!, viewControllerAfterViewController viewController: UIViewController!) -> UIViewController!{
+        var pcvc:PageContentViewController = viewController as PageContentViewController
+        var index:UInt = pcvc.pageIndex
+        self.pageControl!.currentPage = Int(index)
+        if (index == Foundation.NSNotFound){
+            return nil
+        }
+        index++;
+        if (Int(index) == self.pageTitles.count){
+            return nil
+        }
+        return self.viewControllerAtIndex(Int(index))
     }
-    func loginViewShowingLoggedOutUser(loginView: FBLoginView?) {
+    func viewControllerAtIndex(var index:NSInteger) -> PageContentViewController?{
+        if ((self.pageTitles.count == 0) || (index >= self.pageTitles.count)){
+            return nil
+        }
+        var pageContentViewController:PageContentViewController = self.storyboard.instantiateViewControllerWithIdentifier("PageContentViewController") as PageContentViewController
+        pageContentViewController.imageFile = pageImages[index] as NSString
+        pageContentViewController.titleText = pageTitles[index] as NSString
+        pageContentViewController.pageIndex = UInt(index)
+        return pageContentViewController
     }
 }

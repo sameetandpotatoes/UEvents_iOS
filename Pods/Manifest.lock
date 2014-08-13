@@ -1,0 +1,24 @@
+PODS:
+  - Appirater (2.0.2)
+  - Bolts (1.1.1)
+  - Facebook-iOS-SDK (3.16.0):
+    - Bolts
+  - Unirest (1.1.3)
+
+DEPENDENCIES:
+  - Appirater
+  - Facebook-iOS-SDK (from `https://github.com/pgaspar/facebook-ios-sdk.git`, branch `beta4`)
+  - Unirest (~> 1.1.3)
+
+EXTERNAL SOURCES:
+  Facebook-iOS-SDK:
+    :branch: beta4
+    :git: https://github.com/pgaspar/facebook-ios-sdk.git
+
+SPEC CHECKSUMS:
+  Appirater: a5e00fb01d47a9a6acf4b2f22323b4ccf4f23fbb
+  Bolts: 0ca796081c3e7c139bd86d6903c27f1b83036a5d
+  Facebook-iOS-SDK: 56046bfc288be00c593e884bd2dc7639627f65f2
+  Unirest: 318cb0193686af2b2a453fa20df5637606033be9
+
+COCOAPODS: 0.33.1
