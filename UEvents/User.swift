@@ -17,6 +17,8 @@ class User:NSObject{
     var lastName:String = ""
     var pictureURL:String = ""
     var accessToken:String = ""
+    var schoolId:NSString = ""
+    var schoolName:NSString = ""
     init(user: FBGraphUser){
         name = user.name
         firstName = user.first_name
@@ -28,5 +30,8 @@ class User:NSObject{
     }
     func setAuthToken(at: String){
         authToken = at
+    }
+    func getSchoolId() -> NSString{
+        return schoolId
     }
 }

@@ -32,8 +32,6 @@
 
 - (void) viewDidLoad {
     [super viewDidLoad];
-    self.textView.text = @"";
-    self.swipeText.text= @"";
     self.fbl = [[FBLoginView alloc] init];
     self.fbl.delegate = self;
     self.loginView.readPermissions = @[@"public_profile", @"email", @"user_friends"];
@@ -78,7 +76,7 @@
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    self.screenName = @"About Screen";
+    self.screenName = @"Home Screen";
 }
 - (bool) createUser:(id<FBGraphUser>) user{
     self.model = [[User alloc] initWithUser:user];
@@ -104,9 +102,9 @@
     NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
     NSLog(@"%@", result);
     self.model.authToken = [[result valueForKey:@"user"] valueForKey:@"authentication_token"];
-    NSLog(@"%@", self.model.authToken);
-    NSLog(@"%@", [result objectForKey:@"school_id"]);
-    return !([result objectForKey:@"school_id"] == [NSNull null]);
+    self.model.schoolName = [[result valueForKey:@"user"] valueForKey:@"school_name"];
+    self.model.schoolId = [[result valueForKey:@"user"] valueForKey:@"school_id"];
+    return !(self.model.schoolId == [NSNull null]);
 }
 - (void) loginViewShowingLoggedOutUser:(FBLoginView *) loginView{
     FBSession.activeSession.closeAndClearTokenInformation;

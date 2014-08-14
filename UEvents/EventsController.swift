@@ -169,6 +169,7 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             let singleEvent = self.storyboard.instantiateViewControllerWithIdentifier("details") as EventDetailController
             singleEvent.eventStatus = rowData.eventStatus
             singleEvent.userId = user!.id
+            singleEvent.user = user
             singleEvent.eventData = rowData
             self.navigationController.pushViewController(singleEvent, animated: true)
         }
@@ -190,21 +191,18 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         self.activeTabLayer.removeFromSuperlayer()
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
         settings.user = user!
-        settings.schoolName = school
         self.navigationController.pushViewController(settings, animated: false)
     }
     @IBAction func tags(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
         var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
         tagsController.user = user!
-        tagsController.school = school
         self.navigationController.pushViewController(tagsController, animated: false)
     }
     @IBAction func myEvents(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
         var myEvents:MyEventsController = self.storyboard.instantiateViewControllerWithIdentifier("myevents") as MyEventsController
         myEvents.user = user!
-        myEvents.school = school
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject){
@@ -212,7 +210,6 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
             as EventsController
         allEvents.user = user!
-        allEvents.school = school
         self.navigationController.pushViewController(allEvents, animated: false)
     }
 }

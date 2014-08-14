@@ -341,12 +341,12 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tag 1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1aY-aW-Hwk">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tag 1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1aY-aW-Hwk">
                                                 <rect key="frame" x="410" y="226" width="88" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="88" id="y7M-mg-r6K"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -358,7 +358,7 @@
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="90" id="fb1-ss-YdW"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
@@ -383,6 +383,7 @@
                                             <constraint firstItem="sYu-NC-jpm" firstAttribute="top" secondItem="dKU-Hh-bdz" secondAttribute="bottom" constant="14" id="MJ7-TC-aZj"/>
                                             <constraint firstItem="1aY-aW-Hwk" firstAttribute="leading" secondItem="Fnw-y9-gw4" secondAttribute="trailing" constant="9" id="Nv1-EO-9X2"/>
                                             <constraint firstItem="Fnw-y9-gw4" firstAttribute="top" secondItem="1aY-aW-Hwk" secondAttribute="top" id="OJh-Ve-R1F"/>
+                                            <constraint firstAttribute="height" constant="536" id="Ou3-y2-94B"/>
                                             <constraint firstAttribute="bottom" secondItem="U0D-4B-7d6" secondAttribute="bottom" constant="-291" id="P3J-Sm-1Oz"/>
                                             <constraint firstItem="luw-9r-CkW" firstAttribute="leading" secondItem="qoY-Jd-AwZ" secondAttribute="leading" id="SwR-Iw-amz"/>
                                             <constraint firstItem="9ci-L4-Wgm" firstAttribute="leading" secondItem="GTz-jX-iyU" secondAttribute="leading" constant="20" symbolic="YES" id="UMZ-Ya-ytg"/>
@@ -414,8 +415,12 @@
                                     </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="GTz-jX-iyU" secondAttribute="trailing" id="41A-vF-gQV"/>
+                                    <constraint firstItem="GTz-jX-iyU" firstAttribute="top" secondItem="Vi1-CG-H9e" secondAttribute="top" id="ICj-QG-kdw"/>
                                     <constraint firstAttribute="bottom" secondItem="GTz-jX-iyU" secondAttribute="bottom" id="Lj8-9W-z1E"/>
                                     <constraint firstItem="GTz-jX-iyU" firstAttribute="top" secondItem="Vi1-CG-H9e" secondAttribute="top" id="Z2H-oG-rM9"/>
+                                    <constraint firstAttribute="bottom" secondItem="GTz-jX-iyU" secondAttribute="bottom" id="gVN-Zu-avI"/>
+                                    <constraint firstItem="GTz-jX-iyU" firstAttribute="leading" secondItem="Vi1-CG-H9e" secondAttribute="leading" id="hWd-X4-jRz"/>
                                     <constraint firstItem="GTz-jX-iyU" firstAttribute="centerX" secondItem="Vi1-CG-H9e" secondAttribute="centerX" id="lAs-oM-Fzo"/>
                                     <constraint firstAttribute="trailing" secondItem="GTz-jX-iyU" secondAttribute="trailing" id="mdo-LE-8Mn"/>
                                     <constraint firstItem="GTz-jX-iyU" firstAttribute="centerY" secondItem="Vi1-CG-H9e" secondAttribute="centerY" id="nFj-9C-5Ue"/>
@@ -453,7 +458,7 @@
                         <outlet property="eventWhen" destination="qoY-Jd-AwZ" id="IQm-0v-V2I"/>
                         <outlet property="eventWhere" destination="luw-9r-CkW" id="wKH-O9-eSv"/>
                         <outlet property="firstTag" destination="1aY-aW-Hwk" id="k80-s9-BSl"/>
-                        <outlet property="heightConstraint" destination="zDp-A7-sz5" id="Q5d-3q-zPx"/>
+                        <outlet property="heightConstraint" destination="zDp-A7-sz5" id="9et-ve-Wfz"/>
                         <outlet property="mainView" destination="GTz-jX-iyU" id="M3h-9M-J0p"/>
                         <outlet property="rsvpSegButtons" destination="jRM-Ay-XWJ" id="I1E-Ln-zPS"/>
                         <outlet property="scrollView" destination="Vi1-CG-H9e" id="ZHp-gS-IuT"/>
@@ -577,28 +582,6 @@
                                     <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="LFZ-fy-GuY">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                     </imageView>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Swipe to Learn More" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eBF-Ng-5Zn">
-                                        <rect key="frame" x="20" y="524" width="560" height="20"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="bottom" misplaced="YES" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qsb-8A-YEJ">
-                                        <rect key="frame" x="20" y="261" width="560" height="165"/>
-                                        <string key="text">College event information all on one simple platform. Receive event recommendations based on your preferences, sort events by city, school, or type and share them with friends!</string>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                    </textView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hXt-gy-WaN">
-                                        <rect key="frame" x="0.0" y="176" width="600" height="21"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="21" id="9HB-Qv-KQ7"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="23"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NH2-56-rzm" customClass="FBLoginView">
                                         <rect key="frame" x="31" y="462" width="271" height="82"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -606,18 +589,9 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="LFZ-fy-GuY" firstAttribute="trailing" secondItem="hXt-gy-WaN" secondAttribute="trailing" id="AxH-KT-U4a"/>
-                                    <constraint firstItem="qsb-8A-YEJ" firstAttribute="top" secondItem="hXt-gy-WaN" secondAttribute="bottom" constant="64" id="ICB-MB-2di"/>
-                                    <constraint firstItem="eBF-Ng-5Zn" firstAttribute="leading" secondItem="qsb-8A-YEJ" secondAttribute="leading" id="JjF-pK-EJT"/>
-                                    <constraint firstAttribute="bottom" secondItem="eBF-Ng-5Zn" secondAttribute="bottom" constant="56" id="LXP-Nk-vbx"/>
-                                    <constraint firstItem="LFZ-fy-GuY" firstAttribute="leading" secondItem="hXt-gy-WaN" secondAttribute="leading" id="Qh0-WH-0Hl"/>
-                                    <constraint firstItem="hXt-gy-WaN" firstAttribute="centerX" secondItem="qsb-8A-YEJ" secondAttribute="centerX" id="TWK-fv-tSO"/>
                                     <constraint firstAttribute="trailing" secondItem="LFZ-fy-GuY" secondAttribute="trailing" id="YTq-Sg-LMV"/>
                                     <constraint firstAttribute="bottom" secondItem="LFZ-fy-GuY" secondAttribute="bottom" id="cWT-Du-FAA"/>
-                                    <constraint firstItem="LFZ-fy-GuY" firstAttribute="centerY" secondItem="qsb-8A-YEJ" secondAttribute="centerY" constant="-43.5" id="gb0-gH-EBD"/>
-                                    <constraint firstItem="eBF-Ng-5Zn" firstAttribute="trailing" secondItem="qsb-8A-YEJ" secondAttribute="trailing" id="gtt-EW-EoN"/>
                                     <constraint firstItem="LFZ-fy-GuY" firstAttribute="leading" secondItem="J9V-JB-dGH" secondAttribute="leading" id="ldk-1Z-KEq"/>
-                                    <constraint firstItem="eBF-Ng-5Zn" firstAttribute="leading" secondItem="J9V-JB-dGH" secondAttribute="leading" constant="20" id="m2g-MJ-ZHP"/>
                                     <constraint firstItem="LFZ-fy-GuY" firstAttribute="top" secondItem="J9V-JB-dGH" secondAttribute="top" id="u9E-OM-Y0L"/>
                                 </constraints>
                             </view>
@@ -644,8 +618,6 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="LFZ-fy-GuY" id="N1c-mH-quK"/>
                         <outlet property="loginView" destination="NH2-56-rzm" id="IUm-Jk-HGD"/>
-                        <outlet property="swipeText" destination="eBF-Ng-5Zn" id="5Xj-CG-99X"/>
-                        <outlet property="textView" destination="qsb-8A-YEJ" id="BId-BE-bDo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XBE-Sn-Cw7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1019,7 +991,11 @@
                                 <action selector="tags:" destination="538-aM-FG0" id="1WZ-tB-jxD"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem image="My Events - Icon" id="JYS-io-MJW"/>
+                        <barButtonItem image="My Events - Icon" id="JYS-io-MJW">
+                            <connections>
+                                <action selector="myEvents:" destination="538-aM-FG0" id="bVM-e3-Uql"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem image="Settings" id="iXH-Ti-3iW">
                             <connections>
                                 <action selector="settings:" destination="538-aM-FG0" id="GLP-Z7-pcb"/>

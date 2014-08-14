@@ -64,7 +64,7 @@ class APIController: NSObject {
         println("Received response")
     }
     func connection(didReceiveResponse: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
-        // Recieved a new request, clear out the data object
+        // Received a new request, clear out the data object
         self.data = NSMutableData()
     }
     func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
@@ -72,11 +72,11 @@ class APIController: NSObject {
         self.data.appendData(data)
     }
     func parseEvents(connection: NSURLConnection!){
-        var dataAsString: NSString = NSString(data: self.data, encoding: NSUTF8StringEncoding)
+//        var dataAsString: NSString = NSString(data: self.data, encoding: NSUTF8StringEncoding)
         // Convert the retrieved data in to an object through JSON deserialization
         var error: AutoreleasingUnsafeMutablePointer<NSError?> = nil
         var jsonObject:AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: error)
-        println(jsonObject)
+//        println(jsonObject)
         if jsonObject != nil{
             if allEvents == connection || filter == connection{
                 if let nsDict = jsonObject as? NSDictionary{

@@ -21,7 +21,6 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     @IBOutlet weak var tags: UIBarButtonItem!
     @IBOutlet weak var allEvents: UIBarButtonItem!
     var user:User?
-    var schoolName:String?
     override func viewDidLoad() {
         var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(user!.id)/picture?width=200&height=200")
         setUpUI()
@@ -34,7 +33,7 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
             self.edgesForExtendedLayout = UIRectEdge.None //layout adjustements
         }
         name.text = user!.name
-        school.text = schoolName!
+        school.text = user!.schoolName as String
     }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
@@ -69,28 +68,24 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         self.activeTabLayer.removeFromSuperlayer()
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
         settings.user = user!
-        settings.schoolName = schoolName!
         self.navigationController.pushViewController(settings, animated: false)
     }
     @IBAction func tags(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
         var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
         tagsController.user = user!
-        tagsController.school = schoolName!
         self.navigationController.pushViewController(tagsController, animated: false)
     }
     @IBAction func myEvents(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
         var myEvents:MyEventsController = self.storyboard.instantiateViewControllerWithIdentifier("myevents") as MyEventsController
         myEvents.user = user!
-        myEvents.school = schoolName!
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         allEvents.user = user!
-        allEvents.school = schoolName!
         self.navigationController.pushViewController(allEvents, animated: false)
     }
 }

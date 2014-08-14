@@ -32,6 +32,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     var eventData: Event = Event()
     var userId:String = String()
     var height:CGFloat = 0
+    var user:User?
     @IBAction func sharing(sender : UIBarButtonItem) {
         var text = "Hey there! I am going to '\(eventTitle!.text)' at '\(eventWhen!.text)'. If you want to check out more events, you should download UEvents on the App Store or the Play Store.\n\nHere is some more information about the Event:\n\n '\(eventWhere!.text)'\n'\(eventAttending!.text)' people attending! "
         var controller:UIActivityViewController = UIActivityViewController(activityItems: [text], applicationActivities: nil)
@@ -111,17 +112,32 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         self.eventAttending!.layer.borderColor = UIColor.grayColor().CGColor
         self.eventAttending!.layer.borderWidth = 2.0
         //Tags
-        self.secondTag.text = (eventData.tags.count == 2) ? eventData.tags[1] as NSString : ""
-        self.firstTag.text = (eventData.tags.count == 1) ? eventData.tags[0] as NSString : ""
-            var description:NSString = eventData.eventDescription as NSString
-            self.eventDescription!.text = description
-        
-            var textViewSize:CGSize = self.eventDescription!.sizeThatFits(CGSizeMake(self.eventDescription!.frame.size.width,CGFloat.max))
-            self.eventDescription!.bounds.size.height = textViewSize.height
-            height = textViewSize.height
-            println(textViewSize.height)
-            self.scrollView!.contentSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width,
-                    UIScreen.mainScreen().bounds.size.height/2 + heightConstraint!.constant)
+        var tagArray:Array = eventData.tags as Array
+        if tagArray.count == 1{
+            var dictOne:NSDictionary = tagArray[0] as NSDictionary
+            if dictOne != nil && dictOne["name"] != nil{
+                self.firstTag.text = dictOne["name"] as String
+            }
+        } else{
+            self.firstTag.text = "All Events"
+        }
+        if tagArray.count == 2{
+            var dictTwo:NSDictionary = tagArray[1] as NSDictionary
+            if dictTwo != nil && dictTwo["name"] != nil{
+                self.secondTag.text = dictTwo["name"] as String
+            }
+        }else{
+            self.secondTag.text = ""
+        }
+        var description:NSString = eventData.eventDescription as NSString
+        self.eventDescription!.text = description
+        self.eventDescription!.sizeToFit()
+        self.eventDescription!.layoutIfNeeded()
+        heightConstraint.constant = self.eventDescription!.sizeThatFits(CGSizeMake(self.eventDescription!.frame.size.width, CGFloat.max)).height
+        println(heightConstraint.constant)
+//        var frame:CGRect = self.eventDescription!.frame
+//        var size:CGSize = self.eventDescription!.sizeThatFits(self.eventDescription!.frame.size)
+//        heightConstraint.constant = size.height
     }
     @IBAction func rsvpStatusChanged(sender : UISegmentedControl) {
         var image:UIImage
@@ -139,25 +155,44 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         }
         if (newEventStatus != eventStatus){
             eventStatus = newEventStatus;
-            FBRequestConnection.startForPostWithGraphPath("/\(eventData.id)/\(eventStatus)", graphObject: fbGraphObject, completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
-                    if error == nil {
-                        var jsonFeeds = result as FBGraphObject
-                        var toastText:String = ""
-                        if (self.eventStatus == "declined"){
-                            toastText = "Not going to \(self.eventData.name)"
-                        } else if (self.eventStatus == "maybe"){
-                            toastText = "Interested in \(self.eventData.name)"
-                        } else{
-                            toastText = "Going to \(self.eventData.name)"
-                        }
-                        Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
-                        self.eventData.eventStatus = self.eventStatus
-                    } else{
-                        println("RSVP ERROR \(error)")
-                        var alert:UIAlertView = UIAlertView(title: "Error RSVP'ing", message: "Please check your internet connection and try again.", delegate: self, cancelButtonTitle: "Ok")
-                        alert.show()
-                    }
-                } as FBRequestHandler)
+            
+            var headers:NSMutableDictionary = NSMutableDictionary()
+            headers.setValue("application/json", forKey: "Accept")
+            headers.setValue("application/json", forKey: "Content-type")
+            var userParam = ["" : ""]
+            var response:UNIHTTPJsonResponse = (UNIRest.postEntity({ (request: UNIBodyRequest!) -> Void in
+                request.url = "http://localhost:3000/api/events/\(self.eventData.id)/\(self.eventStatus)?authentication_token=\(self.user!.authToken)"
+                request.headers = headers
+                request.body = NSJSONSerialization.dataWithJSONObject(userParam, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
+            })).asJson()
+            if (self.eventStatus == "declined"){
+                toastText = "Not going to \(self.eventData.name)"
+            } else if (self.eventStatus == "maybe"){
+                toastText = "Interested in \(self.eventData.name)"
+            } else{
+                toastText = "Going to \(self.eventData.name)"
+            }
+            Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
+            self.eventData.eventStatus = self.eventStatus
+//            FBRequestConnection.startForPostWithGraphPath("/\(eventData.id)/\(eventStatus)", graphObject: fbGraphObject, completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
+//                    if error == nil {
+//                        var jsonFeeds = result as FBGraphObject
+//                        var toastText:String = ""
+//                        if (self.eventStatus == "declined"){
+//                            toastText = "Not going to \(self.eventData.name)"
+//                        } else if (self.eventStatus == "maybe"){
+//                            toastText = "Interested in \(self.eventData.name)"
+//                        } else{
+//                            toastText = "Going to \(self.eventData.name)"
+//                        }
+//                        Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
+//                        self.eventData.eventStatus = self.eventStatus
+//                    } else{
+//                        println("RSVP ERROR \(error)")
+//                        var alert:UIAlertView = UIAlertView(title: "Error RSVP'ing", message: "Please check your internet connection and try again.", delegate: self, cancelButtonTitle: "Ok")
+//                        alert.show()
+//                    }
+//                } as FBRequestHandler)
         }
     }
     func getRSVPStatus(){

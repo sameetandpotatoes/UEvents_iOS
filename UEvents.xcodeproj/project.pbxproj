@@ -37,6 +37,7 @@
 		C6A8FAE319635A8C0042E61C /* AppearanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A8FAE219635A8C0042E61C /* AppearanceController.swift */; };
 		C6B5FE481960F7210062ECBC /* EventsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B5FE471960F7210062ECBC /* EventsController.swift */; };
 		C6B6F04C1967AFE800B37367 /* TagsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6F04B1967AFE800B37367 /* TagsController.swift */; };
+		C6B9B080199C411D00802768 /* PageContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B9B07F199C411D00802768 /* PageContentViewController.swift */; };
 		C6D35CB11992B3AB009AD575 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D35CB01992B3AB009AD575 /* UIKit.framework */; };
 		C6DC08D31992C716001435D4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6DC08D21992C716001435D4 /* Accelerate.framework */; };
 		C6F3991719955EA0002E259B /* SchoolSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3991619955EA0002E259B /* SchoolSelector.swift */; };
@@ -99,6 +100,7 @@
 		C6A8FAE219635A8C0042E61C /* AppearanceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppearanceController.swift; sourceTree = "<group>"; };
 		C6B5FE471960F7210062ECBC /* EventsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventsController.swift; sourceTree = "<group>"; };
 		C6B6F04B1967AFE800B37367 /* TagsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagsController.swift; sourceTree = "<group>"; };
+		C6B9B07F199C411D00802768 /* PageContentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageContentViewController.swift; sourceTree = "<group>"; };
 		C6D12B8C196B430800732D5F /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		C6D35CB01992B3AB009AD575 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C6DC08D21992C716001435D4 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
@@ -242,6 +244,7 @@
 				C6B6F04B1967AFE800B37367 /* TagsController.swift */,
 				C64D6F2119930E8B0062B4EA /* TagEventsController.swift */,
 				C6F3991619955EA0002E259B /* SchoolSelector.swift */,
+				C6B9B07F199C411D00802768 /* PageContentViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -430,6 +433,7 @@
 				C6B6F04C1967AFE800B37367 /* TagsController.swift in Sources */,
 				C6B5FE481960F7210062ECBC /* EventsController.swift in Sources */,
 				C651781D1995B15A00DA0E85 /* SchoolAPI.swift in Sources */,
+				C6B9B080199C411D00802768 /* PageContentViewController.swift in Sources */,
 				C629BACD19665E5200870E12 /* SettingsController.swift in Sources */,
 				C65560D8199BB04A0042D217 /* DateFormatter.swift in Sources */,
 				C618E148196394CA008E377E /* Event.swift in Sources */,
