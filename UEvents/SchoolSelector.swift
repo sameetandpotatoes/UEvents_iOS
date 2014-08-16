@@ -27,6 +27,7 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
     }
     func setUpUI(){
         self.navigationController.navigationBarHidden = false
+        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationItem.title = "Choose Your School"
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
         self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)

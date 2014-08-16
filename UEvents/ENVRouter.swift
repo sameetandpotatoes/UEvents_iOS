@@ -10,6 +10,7 @@ import Foundation
 
 class ENVRouter: NSObject{
     var localENV:String = "http://uevents.192.168.1.75.xip.io:20559/"
+//    var localENV:String = "http://localhost:3000/"
     var prodENV:String = "http://www.uevents.io/"
     var eventsURL:String = "api/events.json"
     var userEventsURL:String = "api/events/user.json"

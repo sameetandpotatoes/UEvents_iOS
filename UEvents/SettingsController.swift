@@ -36,14 +36,7 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         }
         name.text = user!.name
         school.text = user!.schoolName as String
-//        for sub in self.loginView.subviews{
-//            if let button = sub as? UIButton{
-//                button.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-//                button.setBackgroundImage(nil, forState: UIControlState.Normal)
-//                button.setBackgroundImage(nil, forState: UIControlState.Highlighted)
-//                button.setBackgroundImage(nil, forState: UIControlState.Selected)
-//            }
-//        }
+        self.loginButton.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         fixAnimation()
     }
     func fixAnimation(){
