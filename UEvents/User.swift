@@ -22,14 +22,13 @@ class User:NSObject{
     override init(){
         
     }
-    init(user: FBGraphUser){
-        name = user.name
-        firstName = user.first_name
-        lastName = user.last_name
-        id = user.objectID
-        email = user.objectForKey("email") as String
+    init(user: NSDictionary){
+        name = user.valueForKey("name") as String
+        firstName = user.valueForKey("first_name") as String
+        lastName = user.valueForKey("last_name") as String
+        id = user.valueForKey("id") as String
+        email = user.valueForKey("email") as String
         pictureURL = "http://graph.facebook.com/"+id+"/picture?type=square"
-        accessToken = FBSession.activeSession().accessTokenData.accessToken
     }
     func setAuthToken(at: String){
         authToken = at

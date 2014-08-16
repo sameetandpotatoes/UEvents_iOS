@@ -35,19 +35,7 @@
 
 - (void) viewDidLoad {
     [super viewDidLoad];
-    self.fbl = [[FBLoginView alloc] init];
-    self.fbl.delegate = self;
-    self.loginView.readPermissions = @[@"public_profile", @"email", @"user_friends"];
-    self.loggedOut = 1;
-    for (id obj in _loginView.subviews)
-    {
-        if ([obj isKindOfClass:[UILabel class]])
-        {
-            UILabel *loginLabel = obj;
-            loginLabel.text = @"CONNECT WITH FACEBOOK";
-            loginLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];
-        }
-    }
+    
     self.backgroundImageView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundImageView.image = [UIImage imageNamed:self.imageFile];
     self.backgroundImageView.backgroundColor = [UIColor whiteColor];
@@ -59,49 +47,133 @@
     self.backgroundImageView.image = newImage;
     //here is the scaled image which has been changed to the size specified
     UIGraphicsEndImageContext();
+    
+    [self updateView];
+    
+    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    if (!appDelegate.session.isOpen) {
+        // create a fresh session object
+        appDelegate.session = [[FBSession alloc] init];
+        
+        // if we don't have a cached token, a call to open here would cause UX for login to
+        // occur; we don't want that to happen unless the user clicks the login button, and so
+        // we check here to make sure we have a token before calling open
+        if (appDelegate.session.state == FBSessionStateCreatedTokenLoaded) {
+            // even though we had a cached token, we need to login to make the session usable
+            [appDelegate.session openWithCompletionHandler:^(FBSession *session,
+                                                             FBSessionState status,
+                                                             NSError *error) {
+                // we recurse here, in order to update buttons and labels
+                [self updateView];
+            }];
+        }
+    }
+}
+- (void) updateView{
+    NSLog(@"Updating View");
+    // get the app delegate, so that we can reference the session property
+    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    if (appDelegate.session.isOpen) {
+        // valid account UI is shown whenever the session is open
+        [self.buttonLoginLogout setTitle:@"Log out" forState:UIControlStateNormal];
+        NSString *apiRequest = [NSString stringWithFormat:@"https://graph.facebook.com/me?access_token=%@", appDelegate.session.accessTokenData.accessToken];
+        NSDictionary* headers = @{@"Accept": @"application/json",
+                                  @"Content-type": @"application/json"};
+        
+        NSMutableDictionary *json= [[NSMutableDictionary alloc] init];
+        UNIUrlConnection* asyncConnection = [[UNIRest get:^(UNISimpleRequest *request) {
+            [request setUrl:apiRequest];
+        }] asJsonAsync:^(UNIHTTPJsonResponse *response, NSError *error) {
+            // Do something
+            NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
+            self.model = [[User alloc] initWithUser:result];
+            self.model.accessToken = appDelegate.session.accessTokenData.accessToken;
+            if ([self createUser]){
+                NSLog(@"Going to All Events");
+                EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
+                secondViewController.user = self.model;
+                secondViewController.tag = @"All";
+                [self.navigationController pushViewController:secondViewController animated: true];
+            } else{
+                NSLog(@"Going to Universities");
+                SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
+                school.user = self.model;
+                [self.navigationController pushViewController:school animated:true];
+            }
+        }];
+    } else {
+        // login-needed account UI is shown whenever the session is closed
+        [self.buttonLoginLogout setTitle:@"Log in" forState:UIControlStateNormal];
+    }
 }
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
-                            user:(id<FBGraphUser>)user {
-    if (![self isUser:_cachedUser equalToUser:user]) {
-        _cachedUser = user;
-        _loggedOut = 0;
-        if ([self createUser:(user)]){
-            NSLog(@"Going to All Events");
-            EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
-            secondViewController.user = self.model;
-            secondViewController.tag = @"All";
-            [self.navigationController pushViewController:secondViewController animated: true];
-        } else{
-            NSLog(@"Going to Universities");
-            SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
-            school.user = self.model;
-            [self.navigationController pushViewController:school animated:true];
+
+- (IBAction)buttonClickHandler:(id)sender {
+    // get the app delegate so that we can access the session property
+    AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
+    
+    // this button's job is to flip-flop the session from open to closed
+    if (appDelegate.session.isOpen) {
+        // if a user logs out explicitly, we delete any cached token information, and next
+        // time they run the applicaiton they will be presented with log in UX again; most
+        // users will simply close the app or switch away, without logging out; this will
+        // cause the implicit cached-token login to occur on next launch of the application
+        [appDelegate.session closeAndClearTokenInformation];
+        NSLog(@"Clear session");
+    } else {
+        if (appDelegate.session.state != FBSessionStateCreated) {
+            // Create a new, logged out session.
+            appDelegate.session = [[FBSession alloc] init];
         }
+        NSLog(@"Logging in");
+        // if the session isn't open, let's open it now and present the login UX to the user
+        [appDelegate.session openWithCompletionHandler:^(FBSession *session,
+                                                         FBSessionState status,
+                                                         NSError *error) {
+            // and here we make sure to update our UX according to the new session state
+            [self updateView];
+        }];
     }
 }
-- (BOOL)isUser:(id<FBGraphUser>)firstUser equalToUser:(id<FBGraphUser>)secondUser {
-    NSString *secondId = (NSString*)[secondUser objectID];
-    return
-    [[firstUser objectID] isEqual:secondId] &&
-    [firstUser.name isEqual:secondUser.name] &&
-    [firstUser.first_name isEqual:secondUser.first_name] &&
-    [firstUser.middle_name isEqual:secondUser.middle_name] &&
-    [firstUser.last_name isEqual:secondUser.last_name];
-}
+
+
+//- (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
+//                            user:(id<FBGraphUser>)user {
+//    if (![self isUser:_cachedUser equalToUser:user]) {
+//        _cachedUser = user;
+//        _loggedOut = 0;
+//        if ([self createUser:(user)]){
+//            NSLog(@"Going to All Events");
+//            EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
+//            secondViewController.user = self.model;
+//            secondViewController.tag = @"All";
+//            [self.navigationController pushViewController:secondViewController animated: true];
+//        } else{
+//            NSLog(@"Going to Universities");
+//            SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
+//            school.user = self.model;
+//            [self.navigationController pushViewController:school animated:true];
+//        }
+//    }
+//}
+//- (BOOL)isUser:(id<FBGraphUser>)firstUser equalToUser:(id<FBGraphUser>)secondUser {
+//    NSString *secondId = (NSString*)[secondUser objectID];
+//    return
+//    [[firstUser objectID] isEqual:secondId] &&
+//    [firstUser.name isEqual:secondUser.name] &&
+//    [firstUser.first_name isEqual:secondUser.first_name] &&
+//    [firstUser.middle_name isEqual:secondUser.middle_name] &&
+//    [firstUser.last_name isEqual:secondUser.last_name];
+//}
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.screenName = @"Home Screen";
 }
--(void) doNothing{
-    
-}
-- (bool) createUser:(id<FBGraphUser>) user{
-    self.model = [[User alloc] initWithUser:user];
+- (bool) createUser{
     self.env = [[ENVRouter alloc] initWithCurUser:self.model];
     NSDictionary* headers = @{@"Accept": @"application/json",
                               @"Content-type": @"application/json"};
@@ -134,25 +206,25 @@
         return false;
     }
 }
-- (void) loginViewShowingLoggedOutUser:(FBLoginView *) loginView{
-//    NSLog(@"LOGGED OUT");
-    [FBSession.activeSession closeAndClearTokenInformation];
-//    NSString *name = NSStringFromClass([[self topMostController] class]);
-//    NSLog(name);
-    _loggedOut++;
-    NSLog(@"%i", _loggedOut);
-    if (_loggedOut == 1){
-        NSLog(@"Actually logging out");
-        UINavigationController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"nav"];
-        [self presentViewController:loginViewController animated:true completion:nil];
-    } else {
-        NSLog(@"Doing nothing");
-//        [self performSelector: @selector(doNothing) withObject:nil afterDelay:100000.0];
-    }
-//    UINavigationController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"nav"];
-//    [self presentViewController:loginViewController animated:true completion:nil];
-//    [self.navigationController pushViewController:loginViewController animated:true];
-}
+//- (void) loginViewShowingLoggedOutUser:(FBLoginView *) loginView{
+////    NSLog(@"LOGGED OUT");
+//    [FBSession.activeSession closeAndClearTokenInformation];
+////    NSString *name = NSStringFromClass([[self topMostController] class]);
+////    NSLog(name);
+//    _loggedOut++;
+//    NSLog(@"%i", _loggedOut);
+//    if (_loggedOut == 1){
+//        NSLog(@"Actually logging out");
+//        UINavigationController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"nav"];
+//        [self presentViewController:loginViewController animated:true completion:nil];
+//    } else {
+//        NSLog(@"Doing nothing");
+////        [self performSelector: @selector(doNothing) withObject:nil afterDelay:100000.0];
+//    }
+////    UINavigationController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"nav"];
+////    [self presentViewController:loginViewController animated:true completion:nil];
+////    [self.navigationController pushViewController:loginViewController animated:true];
+//}
 - (UIViewController*) topMostController
 {
     return [self.navigationController visibleViewController];

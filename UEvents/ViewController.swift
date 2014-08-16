@@ -31,18 +31,8 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         self.view.addSubview(pageViewController.view)
         self.pageViewController.didMoveToParentViewController(self)
         var colors:Dictionary<String, Dictionary<String, String>> = appearanceController.getColors()
-//        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-//        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
-//        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-//        var navBarSize:CGSize = self.navigationController.navigationBar.bounds.size
-//        var origin:CGPoint = CGPointMake( navBarSize.width/2, navBarSize.height/2 )
-//        self.navigationController.navigationBarHidden = true
-//        pageControl!.numberOfPages = 3
-//        pageControl!.pageIndicatorTintColor = UIColor.lightGrayColor()
-//        pageControl!.currentPageIndicatorTintColor = UIColor.whiteColor()
-//        pageControl!.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-//        pageControl!.frame = CGRectMake(0,0, pageControl!.bounds.size.width, pageControl!.bounds.size.height)
-//        self.navigationController.delegate = self
+        self.navigationController.navigationBarHidden = true
+        self.navigationController.toolbarHidden = true
         fixAnimation()
     }
     func fixAnimation(){

@@ -11,8 +11,8 @@ import UIKit
 import QuartzCore
 class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     @IBOutlet weak var name: UILabel!
-    @IBOutlet weak var loginView: FBLoginView!
     @IBOutlet weak var school: UILabel!
+    @IBOutlet weak var loginButton: UIButton!
     @IBOutlet var profilePictureView : UIImageView?
     var activeTabLayer:CALayer = CALayer()
     var appearanceController: AppearanceController = AppearanceController()
@@ -24,8 +24,6 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     var user:User?
     var alreadyLoggedOut:Bool = false
     override func viewDidLoad() {
-//        handleFBBug()
-        println("BACK TO SETTINGS")
         var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(user!.id)/picture?width=200&height=200")
         setUpUI()
         var imgData: NSData = NSData(contentsOfURL: imgURL)
@@ -38,14 +36,14 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         }
         name.text = user!.name
         school.text = user!.schoolName as String
-        for sub in self.loginView.subviews{
-            if let button = sub as? UIButton{
-                button.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-                button.setBackgroundImage(nil, forState: UIControlState.Normal)
-                button.setBackgroundImage(nil, forState: UIControlState.Highlighted)
-                button.setBackgroundImage(nil, forState: UIControlState.Selected)
-            }
-        }
+//        for sub in self.loginView.subviews{
+//            if let button = sub as? UIButton{
+//                button.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+//                button.setBackgroundImage(nil, forState: UIControlState.Normal)
+//                button.setBackgroundImage(nil, forState: UIControlState.Highlighted)
+//                button.setBackgroundImage(nil, forState: UIControlState.Selected)
+//            }
+//        }
         fixAnimation()
     }
     func fixAnimation(){
@@ -55,15 +53,6 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
                 UIView.setAnimationsEnabled(true)
             })
         })
-    }
-    override func viewDidAppear(animated: Bool) {
-//        println("BACK TO SETTINGS 1")
-//        if alreadyLoggedOut {
-//            let viewController:ViewController = self.storyboard.instantiateViewControllerWithIdentifier("login") as ViewController
-//            self.presentViewController(viewController, animated: true, completion: nil)
-//        } else{
-//            alreadyLoggedOut = true
-//        }
     }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
@@ -86,6 +75,15 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.screenName = "Settings"
+    }
+
+    
+    @IBAction func handleLogOut(sender: AnyObject) {
+        var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        FBSession.activeSession().closeAndClearTokenInformation()
+        appDelegate.session!.closeAndClearTokenInformation()
+        var home:UIViewController = self.storyboard.instantiateViewControllerWithIdentifier("login") as UIViewController
+        self.navigationController.pushViewController(home, animated: true)
     }
     @IBAction func settings(sender : AnyObject) {
         self.activeTabLayer.removeFromSuperlayer()
