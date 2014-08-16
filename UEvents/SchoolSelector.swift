@@ -35,6 +35,15 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
         self.navigationController.toolbar.opaque = true
         self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         self.navigationController.toolbarHidden = true
+        fixAnimation()
+    }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
     }
     func didReceiveAPIResults(results: NSArray){
         self.tableData = results
@@ -55,13 +64,14 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
     }
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!){
         //Post to API
+        var env:ENVRouter = ENVRouter(curUser: user!)
         var listItem:NSDictionary = tableData[indexPath.row] as NSDictionary
         var headers:NSMutableDictionary = NSMutableDictionary()
         headers.setValue("application/json", forKey: "Accept")
         headers.setValue("application/json", forKey: "Content-type")
         var userParam = ["school_id" : String(listItem["id"] as Int)]
         var response:UNIHTTPJsonResponse = (UNIRest.putEntity({ (request: UNIBodyRequest!) -> Void in
-            request.url = "http://localhost:3000/api/users/\(self.user!.id)?authentication_token=\(self.user!.authToken)"
+            request.url = env.getUpdateUserURL()
             request.headers = headers
             request.body = NSJSONSerialization.dataWithJSONObject(userParam, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
         })).asJson()

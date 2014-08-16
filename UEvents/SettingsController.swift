@@ -11,6 +11,7 @@ import UIKit
 import QuartzCore
 class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var loginView: FBLoginView!
     @IBOutlet weak var school: UILabel!
     @IBOutlet var profilePictureView : UIImageView?
     var activeTabLayer:CALayer = CALayer()
@@ -22,6 +23,7 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     @IBOutlet weak var allEvents: UIBarButtonItem!
     var user:User?
     override func viewDidLoad() {
+//        handleFBBug()
         var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(user!.id)/picture?width=200&height=200")
         setUpUI()
         var imgData: NSData = NSData(contentsOfURL: imgURL)
@@ -34,7 +36,36 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         }
         name.text = user!.name
         school.text = user!.schoolName as String
+        for sub in self.loginView.subviews{
+            if let button = sub as? UIButton{
+                button.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+                button.setBackgroundImage(nil, forState: UIControlState.Normal)
+                button.setBackgroundImage(nil, forState: UIControlState.Highlighted)
+                button.setBackgroundImage(nil, forState: UIControlState.Selected)
+            }
+        }
+        fixAnimation()
     }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
+    }
+//    func loggedIn() -> Bool{
+//        return FBSession.activeSession().isOpen
+//    }
+//    override func viewDidAppear(animated: Bool) {
+//        handleFBBug()
+//    }
+//    func handleFBBug(){
+//        if !loggedIn(){
+//            let viewController:ViewController = self.storyboard.instantiateViewControllerWithIdentifier("login") as ViewController
+//            self.presentViewController(viewController, animated: true, completion: nil)
+//        }
+//    }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
         self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
@@ -44,21 +75,14 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         self.navigationController.toolbarHidden = false
         self.view.userInteractionEnabled = true
-        allEvents.width = appearanceController.width/4 - 15
-        allEvents.tintColor = appearanceController.colorWithHexString("#FFFFFF")
-        settings.width = appearanceController.width/4 - 15
-        settings.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        myEvents.width = appearanceController.width/4 - 15
-        myEvents.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        tags.width = appearanceController.width/4 - 15
-        tags.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        UITabBar.appearance().selectedImageTintColor = UIColor.whiteColor()
-        let xPos = (4 * (appearanceController.width/4)) - 44 - 16 - 15
-        self.activeTabLayer.opacity = 0.5
-        self.activeTabLayer.frame = CGRectMake(xPos, 0, 44+15, 44)
-        self.activeTabLayer.backgroundColor = appearanceController.colorWithHexString("#B1746F").CGColor
-        self.navigationController.toolbar.layer.addSublayer(self.activeTabLayer)
-
+        allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
+        allEvents.tintColor = UIColor.lightGrayColor()
+        settings.width = appearanceController.width/4 - settings.image.size.width/2
+        settings.tintColor = appearanceController.colorWithHexString("#FFFFFF")
+        myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
+        myEvents.tintColor = UIColor.lightGrayColor()
+        tags.width = appearanceController.width/4 - tags.image.size.width/2
+        tags.tintColor = UIColor.lightGrayColor()
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)

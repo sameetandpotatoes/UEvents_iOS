@@ -19,6 +19,9 @@ class User:NSObject{
     var accessToken:String = ""
     var schoolId:NSString = ""
     var schoolName:NSString = ""
+    override init(){
+        
+    }
     init(user: FBGraphUser){
         name = user.name
         firstName = user.first_name

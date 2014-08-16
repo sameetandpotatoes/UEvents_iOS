@@ -13,6 +13,7 @@
 		C61F65021969C26A00EB6962 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61F65011969C26A00EB6962 /* EventCell.swift */; };
 		C61F65041969CA4400EB6962 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61F65031969CA4400EB6962 /* DateCell.swift */; };
 		C629BACD19665E5200870E12 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629BACC19665E5200870E12 /* SettingsController.swift */; };
+		C63DD7E8199D77C70063F7F6 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C63DD7E7199D77C70063F7F6 /* EventKit.framework */; };
 		C64096FE19608EF6007C9096 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64096FD19608EF6007C9096 /* AppDelegate.swift */; };
 		C640970019608EF6007C9096 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64096FF19608EF6007C9096 /* ViewController.swift */; };
 		C640970319608EF6007C9096 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C640970119608EF6007C9096 /* Main.storyboard */; };
@@ -27,6 +28,7 @@
 		C65C56661994092500533F4B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C656203D19940870006BB1C2 /* CoreImage.framework */; };
 		C65C56671994092C00533F4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D12B8C196B430800732D5F /* QuartzCore.framework */; };
 		C673191019646C7100A593E8 /* MyEventsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673190F19646C7100A593E8 /* MyEventsController.swift */; };
+		C6787903199D281B0079137A /* ENVRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6787902199D281B0079137A /* ENVRouter.swift */; };
 		C69E1C121997F9FC00E77E81 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C69E1C111997F9FC00E77E81 /* libGoogleAnalyticsServices.a */; };
 		C69E1C241997FD6200E77E81 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C69E1C231997FD6200E77E81 /* libsqlite3.0.dylib */; };
 		C69E1C261997FD8500E77E81 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C69E1C251997FD8500E77E81 /* libsqlite3.dylib */; };
@@ -62,6 +64,7 @@
 		C61F65011969C26A00EB6962 /* EventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
 		C61F65031969CA4400EB6962 /* DateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		C629BACC19665E5200870E12 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		C63DD7E7199D77C70063F7F6 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		C64096F819608EF6007C9096 /* UEvents.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UEvents.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C64096FC19608EF6007C9096 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C64096FD19608EF6007C9096 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -79,6 +82,7 @@
 		C65560D7199BB04A0042D217 /* DateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		C656203D19940870006BB1C2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
 		C673190F19646C7100A593E8 /* MyEventsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyEventsController.swift; sourceTree = "<group>"; };
+		C6787902199D281B0079137A /* ENVRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENVRouter.swift; sourceTree = "<group>"; };
 		C6954D881964BE2300A206A9 /* PageContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageContentViewController.h; sourceTree = "<group>"; };
 		C69E1C111997F9FC00E77E81 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
 		C69E1C141997FAED00E77E81 /* GAI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GAI.h; sourceTree = "<group>"; };
@@ -115,6 +119,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C63DD7E8199D77C70063F7F6 /* EventKit.framework in Frameworks */,
 				C69E1C2C1997FDD200E77E81 /* libz.dylib in Frameworks */,
 				C69E1C2A1997FDC500E77E81 /* SystemConfiguration.framework in Frameworks */,
 				C69E1C281997FDBD00E77E81 /* CoreData.framework in Frameworks */,
@@ -210,6 +215,7 @@
 			children = (
 				C6A8FAE219635A8C0042E61C /* AppearanceController.swift */,
 				C65560D7199BB04A0042D217 /* DateFormatter.swift */,
+				C6787902199D281B0079137A /* ENVRouter.swift */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -282,6 +288,7 @@
 		FEDF8C16907049A48494573D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C63DD7E7199D77C70063F7F6 /* EventKit.framework */,
 				C69E1C2B1997FDD200E77E81 /* libz.dylib */,
 				C69E1C291997FDC500E77E81 /* SystemConfiguration.framework */,
 				C69E1C271997FDBD00E77E81 /* CoreData.framework */,
@@ -436,6 +443,7 @@
 				C6B9B080199C411D00802768 /* PageContentViewController.swift in Sources */,
 				C629BACD19665E5200870E12 /* SettingsController.swift in Sources */,
 				C65560D8199BB04A0042D217 /* DateFormatter.swift in Sources */,
+				C6787903199D281B0079137A /* ENVRouter.swift in Sources */,
 				C618E148196394CA008E377E /* Event.swift in Sources */,
 				C640970019608EF6007C9096 /* ViewController.swift in Sources */,
 				C64096FE19608EF6007C9096 /* AppDelegate.swift in Sources */,

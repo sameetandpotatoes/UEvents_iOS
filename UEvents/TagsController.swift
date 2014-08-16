@@ -21,6 +21,7 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     var width = UIScreen.mainScreen().bounds.size.width
     var height = UIScreen.mainScreen().bounds.size.height
     var tagPhotos:[String] = ["Tag-All", "Tag-Food", "Tag-Music", "Tag-Nightlife", "Tag-Off-Campus","Tag-Sports"]
+    var dividingFactor:CGFloat = 2
     @IBOutlet var scrollView : UIScrollView?
     
     @IBOutlet weak var allEvents: UIBarButtonItem!
@@ -34,6 +35,9 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         scrollView!.scrollEnabled = true
         self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "TagCell")
         self.collectionView!.reloadData()
+        if appearanceController.isIPAD(){
+            dividingFactor = 2.75
+        }
     }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
@@ -44,20 +48,23 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         self.navigationController.toolbarHidden = false
         self.view.userInteractionEnabled = true
-        allEvents.width = appearanceController.width/4 - 15
-        allEvents.tintColor = appearanceController.colorWithHexString("#FFFFFF")
-        settings.width = appearanceController.width/4 - 15
-        settings.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        myEvents.width = appearanceController.width/4 - 15
-        myEvents.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        tags.width = appearanceController.width/4 - 15
-        tags.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        UITabBar.appearance().selectedImageTintColor = UIColor.whiteColor()
-        let xPos = (2 * (appearanceController.width/4)) - 44 - 16 - 5
-        self.activeTabLayer.opacity = 0.5
-        self.activeTabLayer.frame = CGRectMake(xPos, 0, 44+15, 44)
-        self.activeTabLayer.backgroundColor = appearanceController.colorWithHexString("#B1746F").CGColor
-        self.navigationController.toolbar.layer.addSublayer(self.activeTabLayer)
+        allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
+        allEvents.tintColor = UIColor.lightGrayColor()
+        settings.width = appearanceController.width/4 - settings.image.size.width/2
+        settings.tintColor = UIColor.lightGrayColor()
+        myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
+        myEvents.tintColor = UIColor.lightGrayColor()
+        tags.width = appearanceController.width/4 - tags.image.size.width/2
+        tags.tintColor = appearanceController.colorWithHexString("#FFFFFF")
+        fixAnimation()
+    }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
     }
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()
@@ -74,7 +81,7 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         var tagImage:UIImageView = UIImageView()
         tagImage.contentMode = UIViewContentMode.ScaleAspectFill
         tagImage.image = UIImage(named: tagPhotos[indexPath.row])
-        tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y+10, appearanceController.width/2, appearanceController.height/4)
+        tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y+10, appearanceController.width/dividingFactor, appearanceController.height/4)
         cell.backgroundView = tagImage
         return cell
     }
@@ -107,13 +114,12 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         filter = filter.stringByReplacingOccurrencesOfString("&", withString: "%26", options: NSStringCompareOptions.LiteralSearch, range: nil)
         tagevents.filter = filter
         tagevents.user = user!
-        tagevents.school = school
         self.activeTabLayer.removeFromSuperlayer()
         self.navigationController.pushViewController(tagevents, animated: false)
     }
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize{
         let image = UIImage(named: tagPhotos[indexPath.row])
-        return CGSizeMake(appearanceController.width/2, appearanceController.height/3.5)
+        return CGSizeMake(appearanceController.width/dividingFactor, appearanceController.height/3.5)
     }
     @IBAction func settings(sender : AnyObject) {
         self.activeTabLayer.removeFromSuperlayer()

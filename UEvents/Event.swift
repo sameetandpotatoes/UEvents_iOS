@@ -24,6 +24,9 @@ class Event:NSObject{
     var url:String = ""
     var eventStatus:String = "declined"
     var tags:NSArray = []
+    var startDateObj:NSDate?
+    var endDateObj:NSDate?
+    var shortStartDate:String = ""
     override init(){
         
     }
@@ -40,6 +43,9 @@ class Event:NSObject{
         self.startDate = rowData["start_date"].isEqual(NSNull())
             ? ""
             : DateFormatter.formatDate(input: rowData["start_date"] as NSString)
+        self.shortStartDate = rowData["start_date"].isEqual(NSNull())
+            ? ""
+            : DateFormatter.formatShortDate(input: rowData["start_date"] as NSString)
         self.coverURL = rowData["primary_image_url"].isEqual(NSNull())
             ? ""
             : rowData["primary_image_url"] as NSString
@@ -57,7 +63,7 @@ class Event:NSObject{
             ? ""
             : DateFormatter.formatTime(input: rowData["end_time"] as NSString)
         self.location = rowData["location"].isEqual(NSNull())
-            ? ""
+            ? "No Location"
             : rowData["location"] as NSString
         self.eventDescription = rowData["description"].isEqual(NSNull())
             ? ""
@@ -69,42 +75,12 @@ class Event:NSObject{
             ? ""
             : rowData["url"] as NSString
         self.tags = rowData["tags"] as NSArray
-//        self.name = rowData["name"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["name"] as NSString)
-//        self.id = rowData["event_id"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["event_id"] as NSString)
-//        self.owner = rowData["owner"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["owner"] as NSString)
-//        self.startDate = rowData["start_date"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["start_date"] as NSString)
-//        self.coverURL = rowData["cover_url"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["cover_url"] as NSString)
-//        self.pictureURL = rowData["picture_url"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["picture_url"] as NSString)
-//        self.endDate = rowData["end_date"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["end_date"] as NSString)
-//        self.startTime = rowData["start_time"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["start_time"] as NSString)
-//        self.endTime = rowData["end_time"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["end_time"] as NSString)
-//        self.location = rowData["location"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["location"] as NSString)
-//        self.eventDescription = rowData["description"].isEqual(NSNull())
-//                    ? ""
-//            : String(format: rowData["description"] as NSString)
-//        self.attending = rowData["attending"].isEqual(NSNull())
-//                    ? "0"
-//                    : String(rowData["attending"] as NSInteger)
-//        self.tags = rowData["tags"] as NSArray
+        
+        self.startDateObj = DateFormatter.returnDateObject(input: (rowData["start_time"] as String))
+        if !(rowData["end_date"].isEqual(NSNull())){
+            self.endDateObj = DateFormatter.returnDateObject(input: (rowData["end_time"] as String))
+        } else{
+            self.endDateObj = self.startDateObj
+        }
     }
 }

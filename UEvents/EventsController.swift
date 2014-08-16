@@ -25,12 +25,8 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     var imageCache = NSMutableDictionary()
     var refreshControl:UIRefreshControl!
     var user:User?
-    var school:String = ""
-    var width = UIScreen.mainScreen().bounds.size.width
-    var height = UIScreen.mainScreen().bounds.size.height
-    var allNewDates:NSMutableArray = []
-    var allNewDateIndexes:NSMutableArray = []
-    var lastDateIndex = 0
+    var env:ENVRouter?
+    var tag:String = ""
     @IBOutlet var appsTableView : UITableView?
     @IBOutlet weak var allEvents: UIBarButtonItem!
     @IBOutlet weak var tags: UIBarButtonItem!
@@ -47,12 +43,20 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         if (self.respondsToSelector("setEdgesForExtendedLayout:")) { // if iOS 7
             self.edgesForExtendedLayout = UIRectEdge.None //layout adjustements
         }
-        api = APIController()
-        self.api!.user = user
+        api = APIController(curUser: user!)
         self.api?.allEventsP = self
         self.refreshControl.beginRefreshing()
         self.api!.getEvents()
         self.staticDateText.textColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+//        fixAnimation()
+    }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -69,27 +73,19 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         self.navigationController.toolbarHidden = false
         self.view.userInteractionEnabled = true
-        allEvents.width = appearanceController.width/4 - 15
+        allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
         allEvents.tintColor = appearanceController.colorWithHexString("#FFFFFF")
-        settings.width = appearanceController.width/4 - 15
-        settings.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        myEvents.width = appearanceController.width/4 - 15
-        myEvents.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        tags.width = appearanceController.width/4 - 15
-        tags.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        UITabBar.appearance().selectedImageTintColor = UIColor.whiteColor()
-        let xPos = (1 * (appearanceController.width/4)) - 44 - 16
-        self.activeTabLayer.opacity = 0.5
-        self.activeTabLayer.frame = CGRectMake(xPos, 0, 44+15, 44)
-        self.activeTabLayer.backgroundColor = appearanceController.colorWithHexString("#B1746F").CGColor
-        self.navigationController.toolbar.layer.addSublayer(self.activeTabLayer)
+        settings.width = appearanceController.width/4 - settings.image.size.width/2
+        settings.tintColor = UIColor.lightGrayColor()
+        myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
+        myEvents.tintColor = UIColor.lightGrayColor()
+        tags.width = appearanceController.width/4 - tags.image.size.width/2
+        tags.tintColor = UIColor.lightGrayColor()
     }
     func didReceiveAPIResults(results: Array<NSObject>) {
-        dispatch_async(dispatch_get_main_queue(), {
-            self.tableData = results
-            self.refreshControl.endRefreshing()
-            self.appsTableView!.reloadData()
-        })
+        self.tableData = results
+        self.refreshControl.endRefreshing()
+        self.appsTableView!.reloadData()
     }
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()
@@ -113,38 +109,41 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             var rowData:Event = self.tableData[index] as Event
             
             (cell as EventCell).eventTitle.text = rowData.name as String
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-                var urlString: NSString = rowData.coverURL as NSString
-                if (urlString != ""){
-                    //Check image cache to see if we already downloaded the image
-                    var image: UIImage? = self.imageCache.valueForKey(urlString) as? UIImage
-                    if (image == nil){
-                        //If the image doesn't exist, we must download
-                        var imgURL: NSURL = NSURL(string: urlString)
-                        var request: NSURLRequest = NSURLRequest(URL: imgURL)
-                        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
-                            if error == nil {
-                                var imgData: NSData = NSData(contentsOfURL: imgURL)
-                                image = UIImage(data: data)
-                                var darkenedImage:UIImage = self.appearanceController.darkenImage(image: image!, level: 0.6)
-                                (cell as EventCell).imageView.image = darkenedImage
-                                // Store the image in to our cache
-                                self.imageCache.setValue(darkenedImage, forKey: urlString)
-                            }
-                            else {
-                                println("Error: \(error.localizedDescription)")
-                            }
-                            })
+            if rowData.coverURL == ""{
+                (cell as EventCell).imageView.image = UIImage(named: "DefaultCoverImage")
+                var darkenedImage:UIImage = self.appearanceController.darkenImage(image: (cell as EventCell).imageView.image, level: 0.5)
+                (cell as EventCell).imageView.image = darkenedImage
+            } else{
+                dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+                    var urlString: NSString = rowData.coverURL as NSString
+                    if (urlString != ""){
+                        //Check image cache to see if we already downloaded the image
+                        var image: UIImage? = self.imageCache.valueForKey(urlString) as? UIImage
+                        if (image == nil){
+                            //If the image doesn't exist, we must download
+                            var imgURL: NSURL = NSURL(string: urlString)
+                            var request: NSURLRequest = NSURLRequest(URL: imgURL)
+                            NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+                                if error == nil {
+                                    var imgData: NSData = NSData(contentsOfURL: imgURL)
+                                    image = UIImage(data: data)
+                                    var darkenedImage:UIImage = self.appearanceController.darkenImage(image: image!, level: 0.6)
+                                    (cell as EventCell).imageView.image = darkenedImage
+                                    // Store the image in to our cache
+                                    self.imageCache.setValue(darkenedImage, forKey: urlString)
+                                }
+                                else {
+                                    println("Error: \(error.localizedDescription)")
+                                }
+                                })
+                        } else{
+                            //Found in the cache, so let's retrieve it
+                            (cell as EventCell).imageView.image = image!
+                        }
                     } else{
-                        //Found in the cache, so let's retrieve it
-                        (cell as EventCell).imageView.image = image!
                     }
-                } else{
-                    (cell as EventCell).imageView.image = UIImage(named: "DefaultCoverImage")
-                    var darkenedImage:UIImage = self.appearanceController.darkenImage(image: (cell as EventCell).imageView.image, level: 0.5)
-                    (cell as EventCell).imageView.image = darkenedImage
-                }
-            })
+                })
+            }
             (cell as EventCell).eventWhere.text = rowData.location
             (cell as EventCell).eventWhen.text = rowData.startTime
             tableView.separatorStyle = UITableViewCellSeparatorStyle.None
@@ -177,15 +176,19 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat{
         var listItem:NSObject = self.tableData[indexPath.row]
         if (listItem is Event){
-            return 150
+            if appearanceController.isIPAD(){
+                return 300
+            } else{
+                return 150
+            }
         } else{
             return 30
         }
     }
     func refresh(sender:AnyObject)
     {
-        (api as APIController!).getEvents();
-        self.refreshControl.endRefreshing()
+        self.refreshControl.beginRefreshing()
+        didReceiveAPIResults(self.tableData)
     }
     @IBAction func settings(sender : AnyObject) {
         self.activeTabLayer.removeFromSuperlayer()

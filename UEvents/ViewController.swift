@@ -22,7 +22,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         pageImages = ["Home1.png", "Home2.png"]
         self.pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
         self.pageViewController.dataSource = self
-        self.navigationController.delegate = self
+//        self.navigationController.delegate = self
         var startingViewController:PageContentViewController = self.viewControllerAtIndex(0)!
         var viewControllers:NSArray = [startingViewController]
         self.pageViewController.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: nil)
@@ -31,18 +31,27 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         self.view.addSubview(pageViewController.view)
         self.pageViewController.didMoveToParentViewController(self)
         var colors:Dictionary<String, Dictionary<String, String>> = appearanceController.getColors()
-        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
-        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-        var navBarSize:CGSize = self.navigationController.navigationBar.bounds.size
-        var origin:CGPoint = CGPointMake( navBarSize.width/2, navBarSize.height/2 )
+//        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+//        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
+//        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+//        var navBarSize:CGSize = self.navigationController.navigationBar.bounds.size
+//        var origin:CGPoint = CGPointMake( navBarSize.width/2, navBarSize.height/2 )
         self.navigationController.navigationBarHidden = true
-        pageControl!.numberOfPages = 3
-        pageControl!.pageIndicatorTintColor = UIColor.lightGrayColor()
-        pageControl!.currentPageIndicatorTintColor = UIColor.whiteColor()
-        pageControl!.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-        pageControl!.frame = CGRectMake(0,0, pageControl!.bounds.size.width, pageControl!.bounds.size.height)
-        self.navigationController.delegate = self
+//        pageControl!.numberOfPages = 3
+//        pageControl!.pageIndicatorTintColor = UIColor.lightGrayColor()
+//        pageControl!.currentPageIndicatorTintColor = UIColor.whiteColor()
+//        pageControl!.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+//        pageControl!.frame = CGRectMake(0,0, pageControl!.bounds.size.width, pageControl!.bounds.size.height)
+//        self.navigationController.delegate = self
+        fixAnimation()
+    }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -56,9 +65,10 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
     }
     func pageViewController(pageViewController: UIPageViewController!, viewControllerBeforeViewController viewController: UIViewController!) -> UIViewController!{
         var pcvc:PageContentViewController = viewController as PageContentViewController
-        var index:UInt = pcvc.pageIndex
+        var index:Int = Int(pcvc.pageIndex)
+        var uIndex:UInt = UInt(index)
         self.pageControl!.currentPage = Int(index)
-        if ((index == 0) || (index == Foundation.NSNotFound)){
+        if (uIndex == 0) || (uIndex == Foundation.NSNotFound){
             return nil;
         }
         index--;
@@ -66,9 +76,9 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
     }
     func pageViewController(pageViewController: UIPageViewController!, viewControllerAfterViewController viewController: UIViewController!) -> UIViewController!{
         var pcvc:PageContentViewController = viewController as PageContentViewController
-        var index:UInt = pcvc.pageIndex
+        var index:Int = Int(pcvc.pageIndex)
         self.pageControl!.currentPage = Int(index)
-        if (index == Foundation.NSNotFound){
+        if UInt(index) == Foundation.NSNotFound{
             return nil
         }
         index++;

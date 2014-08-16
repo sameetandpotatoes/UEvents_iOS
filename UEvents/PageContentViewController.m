@@ -17,6 +17,7 @@
 - (void) loginViewShowingLoggedOutUser;
 - (UIViewController*) topMostController;
 @property User *model;
+@property ENVRouter *env;
 @property NSMutableData *responseData;
 @end
 @implementation PageContentViewController
@@ -42,7 +43,6 @@
             UILabel *loginLabel = obj;
             loginLabel.text = @"CONNECT WITH FACEBOOK";
             loginLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14.0f];
-            
         }
     }
     self.backgroundImageView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
@@ -80,6 +80,7 @@
 }
 - (bool) createUser:(id<FBGraphUser>) user{
     self.model = [[User alloc] initWithUser:user];
+    self.env = [[ENVRouter alloc] initWithCurUser:self.model];
     NSDictionary* headers = @{@"Accept": @"application/json",
                               @"Content-type": @"application/json"};
     
@@ -94,17 +95,23 @@
     
     NSLog(@"%@", json);
     UNIHTTPJsonResponse* response = [[UNIRest postEntity:^(UNIBodyRequest* request) {
-        [request setUrl:@"http://localhost:3000/api/users"];
+        [request setUrl:[self.env getPostUserURL]];
+        NSLog([self.env getPostUserURL]);
         [request setHeaders:headers];
         // Converting NSDictionary to JSON
         [request setBody:[NSJSONSerialization dataWithJSONObject:json options:0 error:nil]];
     }] asJson];
+    NSLog(@"%@", response);
     NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
     NSLog(@"%@", result);
-    self.model.authToken = [[result valueForKey:@"user"] valueForKey:@"authentication_token"];
-    self.model.schoolName = [[result valueForKey:@"user"] valueForKey:@"school_name"];
-    self.model.schoolId = [[result valueForKey:@"user"] valueForKey:@"school_id"];
-    return !(self.model.schoolId == [NSNull null]);
+    if (result != [NSNull null]){
+        self.model.authToken = [[result valueForKey:@"user"] valueForKey:@"authentication_token"];
+        self.model.schoolName = [[result valueForKey:@"user"] valueForKey:@"school_name"];
+        self.model.schoolId = [[result valueForKey:@"user"] valueForKey:@"school_id"];
+        return !(self.model.schoolId == [NSNull null]);
+    } else{
+        return false;
+    }
 }
 - (void) loginViewShowingLoggedOutUser:(FBLoginView *) loginView{
     FBSession.activeSession.closeAndClearTokenInformation;

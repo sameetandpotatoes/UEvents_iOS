@@ -18,7 +18,7 @@ class DateCell:UITableViewCell{
         date.frame = frame
         date.textColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         date.font = UIFont(name: "HelveticaNeue", size: 16.0)
-        self.contentView.backgroundColor = appearanceController.colorWithHexString("#FFFFFF")
+        self.contentView.backgroundColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
         self.contentView.addSubview(date)
     }
     required init(coder aDecoder: NSCoder!) {

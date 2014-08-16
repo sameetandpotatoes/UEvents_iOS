@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import EventKit
 
 class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
     @IBOutlet var coverImage : UIImageView?
     @IBOutlet var eventTitle : UILabel?
     @IBOutlet var eventWhen : UILabel?
@@ -33,19 +35,75 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     var userId:String = String()
     var height:CGFloat = 0
     var user:User?
-    @IBAction func sharing(sender : UIBarButtonItem) {
-        var text = "Hey there! I am going to '\(eventTitle!.text)' at '\(eventWhen!.text)'. If you want to check out more events, you should download UEvents on the App Store or the Play Store.\n\nHere is some more information about the Event:\n\n '\(eventWhere!.text)'\n'\(eventAttending!.text)' people attending! "
+    var env:ENVRouter?
+    func sharing(){
+        var text = ""
+        if eventWhere!.text == "No Location"{
+            text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhen!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
+        } else{
+            text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhere!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
+        }
         var controller:UIActivityViewController = UIActivityViewController(activityItems: [text], applicationActivities: nil)
         self.presentViewController(controller, animated: true, completion: nil)
         heightConstraint!.constant = 0
+    }
+    func addToCal(){
+        println("Add to Cal called")
+        var store:EKEventStore = EKEventStore()
+            store.requestAccessToEntityType(EKEntityTypeEvent, completion: { (granted: Bool, error: NSError!) -> Void in
+                if granted{
+                    var event:EKEvent = EKEvent(eventStore: store)
+                    event.title = self.eventTitle!.text
+                    println(self.eventData.startDateObj)
+                    event.startDate = (self.eventData.startDateObj == nil) ? nil : self.eventData.startDateObj
+                    println(self.eventData.endDateObj)
+                    event.endDate = (self.eventData.endDateObj == nil) ? nil : self.eventData.endDateObj
+                    event.calendar = store.defaultCalendarForNewEvents
+                    store.saveEvent(event, span: EKSpanThisEvent, error: nil)
+                    println("Saved Event")
+                    Toast.showToastInParentView(self.view, withText: "Saved Event", withDuration: 1.0)
+                } else{
+                    return
+                }
+        })
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         self.rsvpSegButtons!.tintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         self.navigationController.toolbarHidden = true
         self.scrollView!.scrollEnabled = true
+        env = ENVRouter(curUser: self.user!)
+        addToolbar()
         getRSVPStatus()
         updateView()
+        fixAnimation()
+    }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
+    }
+    func addToolbar(){
+        var tools:UIToolbar = UIToolbar(frame: CGRectMake(0,0,80,44.01))
+        tools.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        tools.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        tools.translucent = false
+        tools.opaque = true
+        var buttons:NSMutableArray = NSMutableArray(capacity: 2)
+        let shareImage = UIImage(named: "Share")
+        var share:UIBarButtonItem = UIBarButtonItem(image: shareImage, style: UIBarButtonItemStyle.Plain, target: self, action: "sharing")
+
+        let calImage = UIImage(named: "Calendar")
+        var calendar:UIBarButtonItem = UIBarButtonItem(image: calImage, style: UIBarButtonItemStyle.Plain, target: self, action: "addToCal")
+        
+        buttons.addObject(calendar)
+        buttons.addObject(share)
+        
+        tools.setItems(buttons, animated: false)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: tools)
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -55,13 +113,23 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         return appearanceController.isIPAD()
     }
     override func viewDidLayoutSubviews() {
-        self.scrollView!.contentSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width,
-            UIScreen.mainScreen().bounds.size.height/1.5 + height)
+        self.scrollView!.contentSize = CGSizeMake(appearanceController.width, heightConstraint.constant + 400 + ((heightConstraint.constant / 10) * 4))
+        if appearanceController.isIPAD(){
+//            self.mainView!.frame = CGRectMake(self.mainView!.frame.origin.x,
+//                self.mainView!.frame.origin.y,
+//                self.mainView!.frame.width,
+//                self.mainView!.frame.height+100)
+//            self.coverImage!.frame = CGRectMake(self.coverImage!.frame.origin.x,
+//                self.coverImage!.frame.origin.y,
+//                self.coverImage!.frame.width,
+//                self.coverImage!.frame.height+100)
+            imageHeight.constant = imageHeight.constant + 100
+        }
     }
     func updateView(){
         //Cover Image
         var urlString: NSString = eventData.coverURL as NSString
-        if urlString.isEqualToString("null"){
+        if urlString.isEqualToString(""){
             let image = UIImage(named: "DefaultCoverImage")
             var darkenedImage:UIImage = self.appearanceController.darkenImage(image: image, level: 0.5)
             coverImage!.image = darkenedImage
@@ -76,7 +144,6 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
                             var image = UIImage(data: data)
                             var darkenedImage:UIImage = self.appearanceController.darkenImage(image: image, level: 0.6)
                             self.coverImage!.image = darkenedImage
-                            // Store the image in to our cache
                         }
                         else {
                             println("Error: \(error.localizedDescription)")
@@ -85,7 +152,8 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             })
         }
         var name:NSString = eventData.name as NSString
-        var start_date:NSString = eventData.startDate as NSString
+        var start_date:NSString = eventData.shortStartDate as NSString
+        var start_time:NSString = eventData.startTime as NSString
         var location:NSString = eventData.location as NSString
         var owner:NSString = eventData.owner as NSString
         var attending:NSString = eventData.attending as NSString
@@ -95,7 +163,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         self.eventTitle!.numberOfLines = 0
         //When
         
-        self.eventWhen!.text = start_date
+        self.eventWhen!.text = start_date + " " + start_time
         self.eventWhen!.font = UIFont(name: "HelveticaNeue", size: 16.0)
         self.eventWhen!.lineBreakMode = NSLineBreakMode.ByWordWrapping
         self.eventWhen!.numberOfLines = 0
@@ -109,8 +177,8 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         self.eventAttending!.attributedText = appearanceController.boldTextWithColor(textToBold: attending, fullText: "\nattending", size: 16.0, color: appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!))
         self.eventAttending!.textAlignment = NSTextAlignment.Center
         self.eventAttending!.numberOfLines = 0
-        self.eventAttending!.layer.borderColor = UIColor.grayColor().CGColor
-        self.eventAttending!.layer.borderWidth = 2.0
+        self.eventAttending!.layer.borderColor = appearanceController.colorWithHexString("#d3d3d3").CGColor
+        self.eventAttending!.layer.borderWidth = 4.0
         //Tags
         var tagArray:Array = eventData.tags as Array
         if tagArray.count == 1{
@@ -132,12 +200,11 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         var description:NSString = eventData.eventDescription as NSString
         self.eventDescription!.text = description
         self.eventDescription!.sizeToFit()
-        self.eventDescription!.layoutIfNeeded()
-        heightConstraint.constant = self.eventDescription!.sizeThatFits(CGSizeMake(self.eventDescription!.frame.size.width, CGFloat.max)).height
-        println(heightConstraint.constant)
-//        var frame:CGRect = self.eventDescription!.frame
-//        var size:CGSize = self.eventDescription!.sizeThatFits(self.eventDescription!.frame.size)
-//        heightConstraint.constant = size.height
+        var height:CGFloat = 25
+        var size = CGSizeMake(appearanceController.width - 20, 10000)
+        height += description.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: nil, context: nil).size.height
+        println(height)
+        heightConstraint.constant = height
     }
     @IBAction func rsvpStatusChanged(sender : UISegmentedControl) {
         var image:UIImage
@@ -161,7 +228,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             headers.setValue("application/json", forKey: "Content-type")
             var userParam = ["" : ""]
             var response:UNIHTTPJsonResponse = (UNIRest.postEntity({ (request: UNIBodyRequest!) -> Void in
-                request.url = "http://localhost:3000/api/events/\(self.eventData.id)/\(self.eventStatus)?authentication_token=\(self.user!.authToken)"
+                request.url = self.env!.getSingleEventURL(self.eventData.id, eventStatus: self.eventStatus)
                 request.headers = headers
                 request.body = NSJSONSerialization.dataWithJSONObject(userParam, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
             })).asJson()
@@ -174,25 +241,6 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             }
             Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
             self.eventData.eventStatus = self.eventStatus
-//            FBRequestConnection.startForPostWithGraphPath("/\(eventData.id)/\(eventStatus)", graphObject: fbGraphObject, completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
-//                    if error == nil {
-//                        var jsonFeeds = result as FBGraphObject
-//                        var toastText:String = ""
-//                        if (self.eventStatus == "declined"){
-//                            toastText = "Not going to \(self.eventData.name)"
-//                        } else if (self.eventStatus == "maybe"){
-//                            toastText = "Interested in \(self.eventData.name)"
-//                        } else{
-//                            toastText = "Going to \(self.eventData.name)"
-//                        }
-//                        Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
-//                        self.eventData.eventStatus = self.eventStatus
-//                    } else{
-//                        println("RSVP ERROR \(error)")
-//                        var alert:UIAlertView = UIAlertView(title: "Error RSVP'ing", message: "Please check your internet connection and try again.", delegate: self, cancelButtonTitle: "Ok")
-//                        alert.show()
-//                    }
-//                } as FBRequestHandler)
         }
     }
     func getRSVPStatus(){
@@ -210,7 +258,6 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
                         self.rsvpSegButtons!.selectedSegmentIndex = 1
                     }
                 }
-                println("RSVP ERROR \(error)")
             } as FBRequestHandler)
         eventData.eventStatus = eventStatus
     }

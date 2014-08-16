@@ -23,7 +23,6 @@ class TagEventsController: GAITrackedViewController, UITableViewDataSource, UITa
     var activeTabLayer:CALayer = CALayer()
     var api:APIController? = nil
     var date:Date = Date()
-    var school:String = ""
     var user:User?
     var appearanceController: AppearanceController = AppearanceController()
     var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
@@ -51,8 +50,7 @@ class TagEventsController: GAITrackedViewController, UITableViewDataSource, UITa
         if (self.respondsToSelector("setEdgesForExtendedLayout:")) { // if iOS 7
             self.edgesForExtendedLayout = UIRectEdge.None //layout adjustements
         }
-        api = APIController()
-        self.api!.user = user
+        api = APIController(curUser: user!)
         self.api?.filterP = self
         self.refreshControl.beginRefreshing()
         self.api!.getEvents(filter)
@@ -75,21 +73,23 @@ class TagEventsController: GAITrackedViewController, UITableViewDataSource, UITa
         self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
         self.navigationController.toolbarHidden = false
         self.view.userInteractionEnabled = true
-        allEvents.width = appearanceController.width/4 - 15
-        allEvents.tintColor = appearanceController.colorWithHexString("#FFFFFF")
-        settings.width = appearanceController.width/4 - 15
-        settings.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        myEvents.width = appearanceController.width/4 - 15
-        myEvents.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        tags.width = appearanceController.width/4 - 15
-        tags.tintColor = appearanceController.colorWithHexString("#D6D6CE")
-        UITabBar.appearance().selectedImageTintColor = UIColor.whiteColor()
-        let xPos = (2 * (appearanceController.width/4)) - 44 - 16 - 5
-        self.activeTabLayer.opacity = 0.5
-        self.activeTabLayer.frame = CGRectMake(xPos, 0, 44+15, 44)
-        self.activeTabLayer.backgroundColor = appearanceController.colorWithHexString("#B1746F").CGColor
-        self.navigationController.toolbar.layer.addSublayer(self.activeTabLayer)
-
+        allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
+        allEvents.tintColor = UIColor.lightGrayColor()
+        settings.width = appearanceController.width/4 - settings.image.size.width/2
+        settings.tintColor = UIColor.lightGrayColor()
+        myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
+        myEvents.tintColor = UIColor.lightGrayColor()
+        tags.width = appearanceController.width/4 - tags.image.size.width/2
+        tags.tintColor = appearanceController.colorWithHexString("#FFFFFF")
+        fixAnimation()
+    }
+    func fixAnimation(){
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            //make calculations
+            dispatch_async(dispatch_get_main_queue(),{
+                UIView.setAnimationsEnabled(true)
+            })
+        })
     }
     func didReceiveAPIResults(results: Array<NSObject>) {
         self.tableData = results
@@ -182,8 +182,8 @@ class TagEventsController: GAITrackedViewController, UITableViewDataSource, UITa
     }
     func refresh(sender:AnyObject)
     {
-        (api as APIController!).getEvents();
-        self.refreshControl.endRefreshing()
+        self.refreshControl.beginRefreshing()
+        didReceiveAPIResults(self.tableData)
     }
     @IBAction func settings(sender : AnyObject) {
         self.activeTabLayer.removeFromSuperlayer()

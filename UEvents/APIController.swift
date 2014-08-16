@@ -25,34 +25,35 @@ class APIController: NSObject {
     var allEventsP: APIControllerProtocol?
     var filterP: FilteredProtocol?
     var userEventsP: MyEventsProtocol?
-    
+    var env:ENVRouter?
     var data = NSMutableData()
     var eventsArray = NSArray()
     var schoolsArray = NSArray()
-    var user:User?
-    override init(){
-        
+    var user:User = User()
+    init(curUser: User){
+        user = curUser
+        env = ENVRouter(curUser: user)
     }
     func getEvents(tag: String!){
-        var urlPath = "http://localhost:3000/api/events.json?filter=\(tag)&authentication_token=\(user!.authToken)"
+        var urlPath = env!.getFilterURL(tag)
         println(urlPath)
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
-        filter = NSURLConnection(request: request, delegate: self, startImmediately: false)
+        filter = NSURLConnection(request: request, delegate: self, startImmediately: true)
         filter!.start()
     }
     func getUserEvents(){
-        var urlPath = "http://localhost:3000/api/events/user.json?authentication_token=\(user!.authToken)"
+        var urlPath = env!.getUserEventsURL()
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
-        userEvents = NSURLConnection(request: request, delegate: self, startImmediately: false)
+        userEvents = NSURLConnection(request: request, delegate: self, startImmediately: true)
         userEvents!.start()
     }
     func getEvents() {
-        var urlPath = "http://localhost:3000/api/events.json?authentication_token=\(user!.authToken)"
+        var urlPath = env!.getEventsURL()
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
-        allEvents = NSURLConnection(request: request, delegate: self, startImmediately: false)
+        allEvents = NSURLConnection(request: request, delegate: self, startImmediately: true)
         allEvents!.start()
     }
     func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
@@ -65,6 +66,7 @@ class APIController: NSObject {
     }
     func connection(didReceiveResponse: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
         // Received a new request, clear out the data object
+        println("Received new request")
         self.data = NSMutableData()
     }
     func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
@@ -72,11 +74,10 @@ class APIController: NSObject {
         self.data.appendData(data)
     }
     func parseEvents(connection: NSURLConnection!){
-//        var dataAsString: NSString = NSString(data: self.data, encoding: NSUTF8StringEncoding)
-        // Convert the retrieved data in to an object through JSON deserialization
+        var dataAsString: NSString = NSString(data: self.data, encoding: NSUTF8StringEncoding)
+        //Convert the retrieved data in to an object through JSON deserialization
         var error: AutoreleasingUnsafeMutablePointer<NSError?> = nil
         var jsonObject:AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: error)
-//        println(jsonObject)
         if jsonObject != nil{
             if allEvents == connection || filter == connection{
                 if let nsDict = jsonObject as? NSDictionary{
@@ -98,22 +99,23 @@ class APIController: NSObject {
         } else{
             //ERROR
         }
-        formatDate()
-        
         var objectEvents:Array<NSObject> = []
-        for index in 0..<eventsArray.count{
-            var rowData:NSDictionary = eventsArray[index] as NSDictionary
-            if let events = rowData["events"] as? NSArray{
-                if events.count > 0 {
-                    objectEvents.append(rowData["date"] as NSString)
-                }
-                for event in 0..<events.count {
-                    var currentEvent:Event = Event(rowData: events[event] as NSDictionary)
-                    objectEvents.append(currentEvent)
+        if eventsArray.count > 2{
+            formatDate()
+        
+            for index in 0..<eventsArray.count{
+                var rowData:NSDictionary = eventsArray[index] as NSDictionary
+                if let events = rowData["events"] as? NSArray{
+                    if events.count > 0 {
+                        objectEvents.append(rowData["date"] as NSString)
+                    }
+                    for event in 0..<events.count {
+                        var currentEvent:Event = Event(rowData: events[event] as NSDictionary)
+                        objectEvents.append(currentEvent)
+                    }
                 }
             }
         }
-        
         if (allEvents == connection){
             allEventsP!.didReceiveAPIResults(objectEvents)
         } else if (userEvents == connection){
