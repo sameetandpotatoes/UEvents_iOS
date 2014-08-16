@@ -36,7 +36,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
 //        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
 //        var navBarSize:CGSize = self.navigationController.navigationBar.bounds.size
 //        var origin:CGPoint = CGPointMake( navBarSize.width/2, navBarSize.height/2 )
-        self.navigationController.navigationBarHidden = true
+//        self.navigationController.navigationBarHidden = true
 //        pageControl!.numberOfPages = 3
 //        pageControl!.pageIndicatorTintColor = UIColor.lightGrayColor()
 //        pageControl!.currentPageIndicatorTintColor = UIColor.whiteColor()

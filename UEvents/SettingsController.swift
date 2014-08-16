@@ -22,8 +22,10 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     @IBOutlet weak var tags: UIBarButtonItem!
     @IBOutlet weak var allEvents: UIBarButtonItem!
     var user:User?
+    var alreadyLoggedOut:Bool = false
     override func viewDidLoad() {
 //        handleFBBug()
+        println("BACK TO SETTINGS")
         var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(user!.id)/picture?width=200&height=200")
         setUpUI()
         var imgData: NSData = NSData(contentsOfURL: imgURL)
@@ -54,18 +56,15 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
             })
         })
     }
-//    func loggedIn() -> Bool{
-//        return FBSession.activeSession().isOpen
-//    }
-//    override func viewDidAppear(animated: Bool) {
-//        handleFBBug()
-//    }
-//    func handleFBBug(){
-//        if !loggedIn(){
+    override func viewDidAppear(animated: Bool) {
+//        println("BACK TO SETTINGS 1")
+//        if alreadyLoggedOut {
 //            let viewController:ViewController = self.storyboard.instantiateViewControllerWithIdentifier("login") as ViewController
 //            self.presentViewController(viewController, animated: true, completion: nil)
+//        } else{
+//            alreadyLoggedOut = true
 //        }
-//    }
+    }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
         self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)

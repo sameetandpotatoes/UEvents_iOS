@@ -19,6 +19,8 @@
 @property User *model;
 @property ENVRouter *env;
 @property NSMutableData *responseData;
+@property id<FBGraphUser> cachedUser;
+@property int loggedOut;
 @end
 @implementation PageContentViewController
 
@@ -36,6 +38,7 @@
     self.fbl = [[FBLoginView alloc] init];
     self.fbl.delegate = self;
     self.loginView.readPermissions = @[@"public_profile", @"email", @"user_friends"];
+    self.loggedOut = 1;
     for (id obj in _loginView.subviews)
     {
         if ([obj isKindOfClass:[UILabel class]])
@@ -64,20 +67,38 @@
 }
 - (void)loginViewFetchedUserInfo:(FBLoginView *)loginView
                             user:(id<FBGraphUser>)user {
-    if ([self createUser:(user)]){
-        EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
-        secondViewController.user = self.model;
-        secondViewController.tag = @"All";
-        [self.navigationController pushViewController:secondViewController animated: true];
-    } else{
-        SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
-        school.user = self.model;
-        [self.navigationController pushViewController:school animated:true];
+    if (![self isUser:_cachedUser equalToUser:user]) {
+        _cachedUser = user;
+        _loggedOut = 0;
+        if ([self createUser:(user)]){
+            NSLog(@"Going to All Events");
+            EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
+            secondViewController.user = self.model;
+            secondViewController.tag = @"All";
+            [self.navigationController pushViewController:secondViewController animated: true];
+        } else{
+            NSLog(@"Going to Universities");
+            SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
+            school.user = self.model;
+            [self.navigationController pushViewController:school animated:true];
+        }
     }
+}
+- (BOOL)isUser:(id<FBGraphUser>)firstUser equalToUser:(id<FBGraphUser>)secondUser {
+    NSString *secondId = (NSString*)[secondUser objectID];
+    return
+    [[firstUser objectID] isEqual:secondId] &&
+    [firstUser.name isEqual:secondUser.name] &&
+    [firstUser.first_name isEqual:secondUser.first_name] &&
+    [firstUser.middle_name isEqual:secondUser.middle_name] &&
+    [firstUser.last_name isEqual:secondUser.last_name];
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.screenName = @"Home Screen";
+}
+-(void) doNothing{
+    
 }
 - (bool) createUser:(id<FBGraphUser>) user{
     self.model = [[User alloc] initWithUser:user];
@@ -94,7 +115,6 @@
     [json setObject:self.model.accessToken forKey:@"access_token"];
     [json setObject:@"" forKey:@"school_id"];
     
-    NSLog(@"%@", json);
     UNIHTTPJsonResponse* response = [[UNIRest postEntity:^(UNIBodyRequest* request) {
         [request setUrl:[self.env getPostUserURL]];
         NSLog([self.env getPostUserURL]);
@@ -115,15 +135,23 @@
     }
 }
 - (void) loginViewShowingLoggedOutUser:(FBLoginView *) loginView{
-    NSLog(@"LOGGED OUT");
-    FBSession.activeSession.closeAndClearTokenInformation;
-    NSString *name = NSStringFromClass([[self topMostController] class]);
-    if ([name rangeOfString:@"ViewController"].location == NSNotFound){
+//    NSLog(@"LOGGED OUT");
+    [FBSession.activeSession closeAndClearTokenInformation];
+//    NSString *name = NSStringFromClass([[self topMostController] class]);
+//    NSLog(name);
+    _loggedOut++;
+    NSLog(@"%i", _loggedOut);
+    if (_loggedOut == 1){
+        NSLog(@"Actually logging out");
         UINavigationController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"nav"];
         [self presentViewController:loginViewController animated:true completion:nil];
     } else {
-        [self performSelector: @selector(login) withObject:nil afterDelay:100000.0];
+        NSLog(@"Doing nothing");
+//        [self performSelector: @selector(doNothing) withObject:nil afterDelay:100000.0];
     }
+//    UINavigationController *loginViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"nav"];
+//    [self presentViewController:loginViewController animated:true completion:nil];
+//    [self.navigationController pushViewController:loginViewController animated:true];
 }
 - (UIViewController*) topMostController
 {

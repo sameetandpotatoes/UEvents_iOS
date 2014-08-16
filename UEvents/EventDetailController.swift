@@ -10,7 +10,6 @@ import UIKit
 import EventKit
 
 class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
-    @IBOutlet weak var imageHeight: NSLayoutConstraint!
     @IBOutlet var coverImage : UIImageView?
     @IBOutlet var eventTitle : UILabel?
     @IBOutlet var eventWhen : UILabel?
@@ -70,6 +69,10 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         self.rsvpSegButtons!.tintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        self.rsvpSegButtons!.frame = CGRectMake(self.rsvpSegButtons!.frame.origin.x,
+                                                self.rsvpSegButtons!.frame.origin.y,
+                                                self.rsvpSegButtons!.frame.width,
+                                                44)
         self.navigationController.toolbarHidden = true
         self.scrollView!.scrollEnabled = true
         env = ENVRouter(curUser: self.user!)
@@ -113,18 +116,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         return appearanceController.isIPAD()
     }
     override func viewDidLayoutSubviews() {
-        self.scrollView!.contentSize = CGSizeMake(appearanceController.width, heightConstraint.constant + 400 + ((heightConstraint.constant / 10) * 4))
-        if appearanceController.isIPAD(){
-//            self.mainView!.frame = CGRectMake(self.mainView!.frame.origin.x,
-//                self.mainView!.frame.origin.y,
-//                self.mainView!.frame.width,
-//                self.mainView!.frame.height+100)
-//            self.coverImage!.frame = CGRectMake(self.coverImage!.frame.origin.x,
-//                self.coverImage!.frame.origin.y,
-//                self.coverImage!.frame.width,
-//                self.coverImage!.frame.height+100)
-            imageHeight.constant = imageHeight.constant + 100
-        }
+        self.scrollView!.contentSize = CGSizeMake(0, heightConstraint.constant + 400 + ((heightConstraint.constant / 10) * 4))
     }
     func updateView(){
         //Cover Image

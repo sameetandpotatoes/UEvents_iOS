@@ -65,7 +65,6 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.api!.getEvents(tag)
         }
         self.staticDateText.textColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-//        fixAnimation()
     }
     func fixAnimation(){
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
@@ -218,26 +217,22 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         handleEventsReceived(self.tableData)
     }
     @IBAction func settings(sender : AnyObject) {
-//        self.activeTabLayer.removeFromSuperlayer()
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
         settings.user = user!
         self.navigationController.pushViewController(settings, animated: false)
     }
     @IBAction func tags(sender: AnyObject){
-//        self.activeTabLayer.removeFromSuperlayer()
         var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
         tagsController.user = user!
         self.navigationController.pushViewController(tagsController, animated: false)
     }
     @IBAction func myEvents(sender: AnyObject){
-//        self.activeTabLayer.removeFromSuperlayer()
         var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         myEvents.user = user!
         myEvents.tag = "User"
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject){
-//        self.activeTabLayer.removeFromSuperlayer()
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
             as EventsController
         allEvents.user = user!
