@@ -67,6 +67,7 @@
     if ([self createUser:(user)]){
         EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
         secondViewController.user = self.model;
+        secondViewController.tag = @"All";
         [self.navigationController pushViewController:secondViewController animated: true];
     } else{
         SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
@@ -114,6 +115,7 @@
     }
 }
 - (void) loginViewShowingLoggedOutUser:(FBLoginView *) loginView{
+    NSLog(@"LOGGED OUT");
     FBSession.activeSession.closeAndClearTokenInformation;
     NSString *name = NSStringFromClass([[self topMostController] class]);
     if ([name rangeOfString:@"ViewController"].location == NSNotFound){

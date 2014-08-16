@@ -78,7 +78,7 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
         allEvents.tintColor = UIColor.lightGrayColor()
         settings.width = appearanceController.width/4 - settings.image.size.width/2
-        settings.tintColor = appearanceController.colorWithHexString("#FFFFFF")
+        settings.tintColor = UIColor.whiteColor()
         myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
         myEvents.tintColor = UIColor.lightGrayColor()
         tags.width = appearanceController.width/4 - tags.image.size.width/2
@@ -102,14 +102,16 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     }
     @IBAction func myEvents(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
-        var myEvents:MyEventsController = self.storyboard.instantiateViewControllerWithIdentifier("myevents") as MyEventsController
+        var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         myEvents.user = user!
+        myEvents.tag = "User"
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject){
         self.activeTabLayer.removeFromSuperlayer()
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         allEvents.user = user!
+        allEvents.tag = "All"
         self.navigationController.pushViewController(allEvents, animated: false)
     }
 }

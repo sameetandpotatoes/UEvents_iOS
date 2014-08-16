@@ -8,21 +8,21 @@
 
 import UIKit
 
-protocol APIControllerProtocol {
-    func didReceiveAPIResults(results: Array<NSObject>)
+protocol AllEventsProtocol {
+    func didReceiveAllEvents(results: Array<NSObject>)
 }
 protocol FilteredProtocol {
-    func didReceiveAPIResults(results: Array<NSObject>)
+    func didReceiveFilteredEvents(results: Array<NSObject>)
 }
 protocol MyEventsProtocol {
-    func didReceiveAPIResults(results: Array<NSObject>)
+    func didReceiveUserEvents(results: Array<NSObject>)
 }
 class APIController: NSObject {
     var allEvents:NSURLConnection?
     var filter:NSURLConnection?
     var userEvents:NSURLConnection?
     
-    var allEventsP: APIControllerProtocol?
+    var allEventsP: AllEventsProtocol?
     var filterP: FilteredProtocol?
     var userEventsP: MyEventsProtocol?
     var env:ENVRouter?
@@ -117,11 +117,11 @@ class APIController: NSObject {
             }
         }
         if (allEvents == connection){
-            allEventsP!.didReceiveAPIResults(objectEvents)
+            allEventsP!.didReceiveAllEvents(objectEvents)
         } else if (userEvents == connection){
-            userEventsP!.didReceiveAPIResults(objectEvents)
+            userEventsP!.didReceiveUserEvents(objectEvents)
         } else if (filter == connection){
-            filterP!.didReceiveAPIResults(objectEvents)
+            filterP!.didReceiveFilteredEvents(objectEvents)
         }
     }
     func connectionDidFinishLoading(connection: NSURLConnection!) {

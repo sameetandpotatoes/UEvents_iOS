@@ -79,8 +79,8 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
         //Redirect to Events
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
             as EventsController
+        user!.schoolName = listItem["name"] as String
         allEvents.user = user!
-        allEvents.school = listItem["name"] as String
         self.navigationController.pushViewController(allEvents, animated: false)
     }
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat{

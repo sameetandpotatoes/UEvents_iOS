@@ -12,7 +12,6 @@ import QuartzCore
 
 class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
     var user:User?
-    var activeTabLayer:CALayer = CALayer()
     @IBOutlet var collectionView : UICollectionView?
     var firstTime:Bool = true
     var appearanceController: AppearanceController = AppearanceController()
@@ -89,14 +88,10 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         return 1
     }
     func collectionView(collectionView: UICollectionView!, didSelectItemAtIndexPath indexPath: NSIndexPath!){
-        let tagevents:TagEventsController = self.storyboard.instantiateViewControllerWithIdentifier("tagevents") as TagEventsController
         var filter:String = ""
         switch indexPath.row{
             case 0:
-                let allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
-                allEvents.user = user!
-                allEvents.school = school
-                self.navigationController.pushViewController(allEvents, animated: false)
+                filter = "All"
             case 1:
                 filter = "Food & Dining"
             case 2:
@@ -112,38 +107,36 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         }
         filter = filter.stringByReplacingOccurrencesOfString(" ", withString: "%20", options: NSStringCompareOptions.LiteralSearch, range: nil)
         filter = filter.stringByReplacingOccurrencesOfString("&", withString: "%26", options: NSStringCompareOptions.LiteralSearch, range: nil)
-        tagevents.filter = filter
-        tagevents.user = user!
-        self.activeTabLayer.removeFromSuperlayer()
-        self.navigationController.pushViewController(tagevents, animated: false)
+        let events:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
+        events.tag = filter
+        events.user = user!
+        self.navigationController.pushViewController(events, animated: true)
     }
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize{
         let image = UIImage(named: tagPhotos[indexPath.row])
         return CGSizeMake(appearanceController.width/dividingFactor, appearanceController.height/3.5)
     }
     @IBAction func settings(sender : AnyObject) {
-        self.activeTabLayer.removeFromSuperlayer()
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
         settings.user = user!
         self.navigationController.pushViewController(settings, animated: false)
     }
     @IBAction func tags(sender: AnyObject){
-        self.activeTabLayer.removeFromSuperlayer()
         var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
         tagsController.user = user!
         self.navigationController.pushViewController(tagsController, animated: false)
     }
     @IBAction func myEvents(sender: AnyObject){
-        self.activeTabLayer.removeFromSuperlayer()
-        var myEvents:MyEventsController = self.storyboard.instantiateViewControllerWithIdentifier("myevents") as MyEventsController
+        var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         myEvents.user = user!
+        myEvents.tag = "User"
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject) {
-        self.activeTabLayer.removeFromSuperlayer()
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
             as EventsController
         allEvents.user = user!
+        allEvents.tag = "All"
         self.navigationController.pushViewController(allEvents, animated: false)
     }
 }

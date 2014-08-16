@@ -21,13 +21,11 @@
 		C640971119608EF6007C9096 /* UEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640971019608EF6007C9096 /* UEventsTests.swift */; };
 		C64AD664196245CD001A58E5 /* APIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64AD663196245CD001A58E5 /* APIController.swift */; };
 		C64AD66619624D1E001A58E5 /* EventDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64AD66519624D1E001A58E5 /* EventDetailController.swift */; };
-		C64D6F2219930E8B0062B4EA /* TagEventsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64D6F2119930E8B0062B4EA /* TagEventsController.swift */; };
 		C651781D1995B15A00DA0E85 /* SchoolAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651781C1995B15A00DA0E85 /* SchoolAPI.swift */; };
 		C65191301964B9FF00E62726 /* PageContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C651912F1964B9FF00E62726 /* PageContentViewController.m */; };
 		C65560D8199BB04A0042D217 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65560D7199BB04A0042D217 /* DateFormatter.swift */; };
 		C65C56661994092500533F4B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C656203D19940870006BB1C2 /* CoreImage.framework */; };
 		C65C56671994092C00533F4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D12B8C196B430800732D5F /* QuartzCore.framework */; };
-		C673191019646C7100A593E8 /* MyEventsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673190F19646C7100A593E8 /* MyEventsController.swift */; };
 		C6787903199D281B0079137A /* ENVRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6787902199D281B0079137A /* ENVRouter.swift */; };
 		C69E1C121997F9FC00E77E81 /* libGoogleAnalyticsServices.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C69E1C111997F9FC00E77E81 /* libGoogleAnalyticsServices.a */; };
 		C69E1C241997FD6200E77E81 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C69E1C231997FD6200E77E81 /* libsqlite3.0.dylib */; };
@@ -76,12 +74,10 @@
 		C640971019608EF6007C9096 /* UEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UEventsTests.swift; sourceTree = "<group>"; };
 		C64AD663196245CD001A58E5 /* APIController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIController.swift; sourceTree = "<group>"; };
 		C64AD66519624D1E001A58E5 /* EventDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailController.swift; sourceTree = "<group>"; };
-		C64D6F2119930E8B0062B4EA /* TagEventsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEventsController.swift; sourceTree = "<group>"; };
 		C651781C1995B15A00DA0E85 /* SchoolAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchoolAPI.swift; sourceTree = "<group>"; };
 		C651912F1964B9FF00E62726 /* PageContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageContentViewController.m; sourceTree = "<group>"; };
 		C65560D7199BB04A0042D217 /* DateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		C656203D19940870006BB1C2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
-		C673190F19646C7100A593E8 /* MyEventsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyEventsController.swift; sourceTree = "<group>"; };
 		C6787902199D281B0079137A /* ENVRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ENVRouter.swift; sourceTree = "<group>"; };
 		C6954D881964BE2300A206A9 /* PageContentViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PageContentViewController.h; sourceTree = "<group>"; };
 		C69E1C111997F9FC00E77E81 /* libGoogleAnalyticsServices.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGoogleAnalyticsServices.a; sourceTree = "<group>"; };
@@ -243,12 +239,10 @@
 				C64096FF19608EF6007C9096 /* ViewController.swift */,
 				C6B5FE471960F7210062ECBC /* EventsController.swift */,
 				C64AD66519624D1E001A58E5 /* EventDetailController.swift */,
-				C673190F19646C7100A593E8 /* MyEventsController.swift */,
 				C651912F1964B9FF00E62726 /* PageContentViewController.m */,
 				C6954D881964BE2300A206A9 /* PageContentViewController.h */,
 				C629BACC19665E5200870E12 /* SettingsController.swift */,
 				C6B6F04B1967AFE800B37367 /* TagsController.swift */,
-				C64D6F2119930E8B0062B4EA /* TagEventsController.swift */,
 				C6F3991619955EA0002E259B /* SchoolSelector.swift */,
 				C6B9B07F199C411D00802768 /* PageContentViewController.swift */,
 			);
@@ -455,9 +449,7 @@
 				C65191301964B9FF00E62726 /* PageContentViewController.m in Sources */,
 				C6A8FAE319635A8C0042E61C /* AppearanceController.swift in Sources */,
 				C6189A4519660DC900C7F37F /* Toast.m in Sources */,
-				C64D6F2219930E8B0062B4EA /* TagEventsController.swift in Sources */,
 				C64AD66619624D1E001A58E5 /* EventDetailController.swift in Sources */,
-				C673191019646C7100A593E8 /* MyEventsController.swift in Sources */,
 				C64AD664196245CD001A58E5 /* APIController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
