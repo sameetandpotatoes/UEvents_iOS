@@ -55,15 +55,6 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         myEvents.tintColor = UIColor.lightGrayColor()
         tags.width = appearanceController.width/4 - tags.image.size.width/2
         tags.tintColor = appearanceController.colorWithHexString("#FFFFFF")
-        fixAnimation()
-    }
-    func fixAnimation(){
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-            //make calculations
-            dispatch_async(dispatch_get_main_queue(),{
-                UIView.setAnimationsEnabled(true)
-            })
-        })
     }
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()
@@ -78,9 +69,11 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     func collectionView(collectionView: UICollectionView!, cellForItemAtIndexPath indexPath: NSIndexPath!) -> UICollectionViewCell!{
         var cell:UICollectionViewCell = collectionView.dequeueReusableCellWithReuseIdentifier("TagCell", forIndexPath: indexPath) as UICollectionViewCell
         var tagImage:UIImageView = UIImageView()
-        tagImage.contentMode = UIViewContentMode.ScaleAspectFill
+        tagImage.contentMode = UIViewContentMode.ScaleAspectFit
+//        tagImage.contentMode = UIViewContentMode.ScaleAspectFill
         tagImage.image = UIImage(named: tagPhotos[indexPath.row])
         tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y+10, appearanceController.width/dividingFactor, appearanceController.height/4)
+//        tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y + 10, 500, 500)
         cell.backgroundView = tagImage
         return cell
     }
@@ -113,8 +106,9 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         self.navigationController.pushViewController(events, animated: true)
     }
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize{
-        let image = UIImage(named: tagPhotos[indexPath.row])
-        return CGSizeMake(appearanceController.width/dividingFactor, appearanceController.height/3.5)
+//        let image = UIImage(named: tagPhotos[indexPath.row])
+        return CGSizeMake(300, 300)
+//        return CGSizeMake(appearanceController.width/dividingFactor, appearanceController.height/3.5)
     }
     @IBAction func settings(sender : AnyObject) {
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController

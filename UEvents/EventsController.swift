@@ -42,14 +42,7 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         if (self.respondsToSelector("setEdgesForExtendedLayout:")) { // if iOS 7
             self.edgesForExtendedLayout = UIRectEdge.None //layout adjustments
         }
-    }
-    func fixAnimation(){
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-            //make calculations
-            dispatch_async(dispatch_get_main_queue(),{
-                UIView.setAnimationsEnabled(true)
-            })
-        })
+        SVProgressHUD.dismiss()
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -58,29 +51,29 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     }
     override func viewDidAppear(animated: Bool) {
         dispatch_async(dispatch_get_main_queue()) {
-        self.api = APIController(curUser: self.user!)
-        if self.tag == "All" {
-            self.navigationItem.title = "All Events"
-            self.allEvents.tintColor = UIColor.whiteColor()
-            self.api!.allEventsP = self
-            self.refreshControl.beginRefreshing()
-            self.api!.getEvents()
-        } else if self.tag == "User" {
-            self.navigationItem.title = "\(self.user!.firstName)'s Events"
-            self.myEvents.tintColor = UIColor.whiteColor()
-            self.api?.userEventsP = self
-            self.refreshControl.beginRefreshing()
-            self.api!.getUserEvents()
-        } else{
-            var titleFilter:String = self.tag.stringByReplacingOccurrencesOfString("%20", withString: " ", options: NSStringCompareOptions.LiteralSearch, range: nil)
-            titleFilter = titleFilter.stringByReplacingOccurrencesOfString("%26", withString: "&", options: NSStringCompareOptions.LiteralSearch, range: nil)
-            self.navigationItem.title = titleFilter.capitalizedString
-            self.tags.tintColor = UIColor.whiteColor()
-            self.api?.filterP = self
-            self.refreshControl.beginRefreshing()
-            self.api!.getEvents(self.tag)
-        }
-        self.staticDateText.textColor = self.appearanceController.colorWithHexString(self.colors["UChicago"]!["Primary"]!)
+            self.api = APIController(curUser: self.user!)
+            if self.tag == "All" {
+                self.navigationItem.title = "All Events"
+                self.allEvents.tintColor = UIColor.whiteColor()
+                self.api!.allEventsP = self
+                self.refreshControl.beginRefreshing()
+                self.api!.getEvents()
+            } else if self.tag == "User" {
+                self.navigationItem.title = "\(self.user!.firstName)'s Events"
+                self.myEvents.tintColor = UIColor.whiteColor()
+                self.api?.userEventsP = self
+                self.refreshControl.beginRefreshing()
+                self.api!.getUserEvents()
+            } else{
+                var titleFilter:String = self.tag.stringByReplacingOccurrencesOfString("%20", withString: " ", options: NSStringCompareOptions.LiteralSearch, range: nil)
+                titleFilter = titleFilter.stringByReplacingOccurrencesOfString("%26", withString: "&", options: NSStringCompareOptions.LiteralSearch, range: nil)
+                self.navigationItem.title = titleFilter.capitalizedString
+                self.tags.tintColor = UIColor.whiteColor()
+                self.api?.filterP = self
+                self.refreshControl.beginRefreshing()
+                self.api!.getEvents(self.tag)
+            }
+            self.staticDateText.textColor = self.appearanceController.colorWithHexString(self.colors["UChicago"]!["Primary"]!)
         }
     }
     func setUpUI(){

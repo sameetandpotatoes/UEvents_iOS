@@ -16,6 +16,11 @@ class SchoolAPI:NSObject{
     var schoolsP:SchoolsProtocol?
     var data = NSMutableData()
     var schoolsArray = NSArray()
+    var user:User!
+    var env:ENVRouter!
+    init(user: User){
+        self.user = user
+    }
     override init(){
         
     }

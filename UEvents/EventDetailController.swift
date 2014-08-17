@@ -236,7 +236,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         }
     }
     func getRSVPStatus(){
-        FBRequestConnection.startWithGraphPath("/\(eventData.id)/\(eventStatus)/\(userId)", completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
+        FBRequestConnection.startWithGraphPath("/\(eventData.id)/\(eventStatus)/\(userId)?access_token=\(user!.accessToken)", completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
                 if error == nil {
                     var jsonFeeds = result as FBGraphObject
                     var feeds = jsonFeeds["data"] as NSMutableArray

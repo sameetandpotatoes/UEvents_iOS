@@ -19,10 +19,9 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
     override func viewDidLoad() {
         super.viewDidLoad()
         pageTitles = ["", ""]
-        pageImages = ["Home1.png", "Home2.png"]
+        pageImages = ["Slideshow - 4", "Slideshow - 5"]
         self.pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
         self.pageViewController.dataSource = self
-//        self.navigationController.delegate = self
         var startingViewController:PageContentViewController = self.viewControllerAtIndex(0)!
         var viewControllers:NSArray = [startingViewController]
         self.pageViewController.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: nil)
@@ -58,7 +57,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         var index:Int = Int(pcvc.pageIndex)
         var uIndex:UInt = UInt(index)
         self.pageControl!.currentPage = Int(index)
-        if (uIndex == 0) || (uIndex == Foundation.NSNotFound){
+        if (index == 0) || (index == Foundation.NSNotFound){
             return nil;
         }
         index--;
@@ -68,7 +67,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         var pcvc:PageContentViewController = viewController as PageContentViewController
         var index:Int = Int(pcvc.pageIndex)
         self.pageControl!.currentPage = Int(index)
-        if UInt(index) == Foundation.NSNotFound{
+        if index == Foundation.NSNotFound{
             return nil
         }
         index++;

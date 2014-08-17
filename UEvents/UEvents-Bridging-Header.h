@@ -25,3 +25,4 @@
 #import "GAITrackedViewController.h"
 #import "GAITracker.h"
 #import <UNIRest.h>
+#import <SVProgressHUD/SVProgressHUD.h>

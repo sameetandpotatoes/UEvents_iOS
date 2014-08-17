@@ -84,37 +84,40 @@
     // get the app delegate, so that we can reference the session property
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
     if (appDelegate.session.isOpen) {
-        //Display GIF
-        [UIImage animatedImageNamed:@"Image-" duration:1.0f];
         [self.buttonLoginLogout setTitle:@"Log out" forState:UIControlStateNormal];
-        NSString *apiRequest = [NSString stringWithFormat:@"https://graph.facebook.com/me?access_token=%@", appDelegate.session.accessTokenData.accessToken];
-        NSDictionary* headers = @{@"Accept": @"application/json",
-                                  @"Content-type": @"application/json"};
-        
-        NSMutableDictionary *json= [[NSMutableDictionary alloc] init];
-        UNIUrlConnection* asyncConnection = [[UNIRest get:^(UNISimpleRequest *request) {
-            [request setUrl:apiRequest];
-        }] asJsonAsync:^(UNIHTTPJsonResponse *response, NSError *error) {
-            // Do something
-            NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
-            self.model = [[User alloc] initWithUser:result];
-            self.model.accessToken = appDelegate.session.accessTokenData.accessToken;
-            if ([self createUser]){
-                NSLog(@"Going to All Events");
-                EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
-                NSLog(@"Finished instantiating");
-                secondViewController.user = self.model;
-                secondViewController.tag = @"All";
-                NSLog(@"Set user model and tag");
-                [self.navigationController pushViewController:secondViewController animated: true];
-                NSLog(@"Finished pushing");
-            } else{
-                NSLog(@"Going to Universities");
-                SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
-                school.user = self.model;
-                [self.navigationController pushViewController:school animated:true];
-            }
-        }];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+            [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeGradient];
+//            for (int i = 1; i <= 10000; i++)
+//            {
+//                NSLog(@"%d", i);
+//            }
+//        });
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // long-running code
+            NSString *apiRequest = [NSString stringWithFormat:@"https://graph.facebook.com/me?access_token=%@", appDelegate.session.accessTokenData.accessToken];
+            NSDictionary* headers = @{@"Accept": @"application/json",
+                                      @"Content-type": @"application/json"};
+            
+            NSMutableDictionary *json= [[NSMutableDictionary alloc] init];
+            UNIUrlConnection* asyncConnection = [[UNIRest get:^(UNISimpleRequest *request) {
+                [request setUrl:apiRequest];
+            }] asJsonAsync:^(UNIHTTPJsonResponse *response, NSError *error) {
+                // Do something
+                NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
+                self.model = [[User alloc] initWithUser:result];
+                self.model.accessToken = appDelegate.session.accessTokenData.accessToken;
+                if ([self createUser]){
+                    EventsController *secondViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"events"];
+                    secondViewController.user = self.model;
+                    secondViewController.tag = @"All";
+                    [self.navigationController pushViewController:secondViewController animated: true];
+                } else{
+                    SchoolSelector *school = [self.storyboard instantiateViewControllerWithIdentifier:@"school"];
+                    school.user = self.model;
+                    [self.navigationController pushViewController:school animated:true];
+                }
+            }];
+        });
     } else {
         // login-needed account UI is shown whenever the session is closed
         [self.buttonLoginLogout setTitle:@"Log in" forState:UIControlStateNormal];
@@ -178,10 +181,9 @@
         // Converting NSDictionary to JSON
         [request setBody:[NSJSONSerialization dataWithJSONObject:json options:0 error:nil]];
     }] asJson];
-    NSLog(@"%@", response);
     NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
     NSLog(@"%@", result);
-    if (result != [NSNull null]){
+    if (result != nil){
         self.model.authToken = [[result valueForKey:@"user"] valueForKey:@"authentication_token"];
         self.model.schoolName = [[result valueForKey:@"user"] valueForKey:@"school_name"];
         self.model.schoolId = [[result valueForKey:@"user"] valueForKey:@"school_id"];
@@ -189,9 +191,5 @@
     } else{
         return false;
     }
-}
-- (UIViewController*) topMostController
-{
-    return [self.navigationController visibleViewController];
 }
 @end
