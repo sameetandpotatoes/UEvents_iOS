@@ -21,6 +21,7 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
         var api = SchoolAPI()
         api.schoolsP = self
         api.getSchools()
+        SVProgressHUD.dismiss()
     }
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()

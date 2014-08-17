@@ -43,28 +43,41 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhere!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
         }
         var controller:UIActivityViewController = UIActivityViewController(activityItems: [text], applicationActivities: nil)
-        self.presentViewController(controller, animated: true, completion: nil)
-        heightConstraint!.constant = 0
+        self.navigationController.presentViewController(controller, animated: true, completion: nil)
     }
     func addToCal(){
-        println("Add to Cal called")
-        var store:EKEventStore = EKEventStore()
-            store.requestAccessToEntityType(EKEntityTypeEvent, completion: { (granted: Bool, error: NSError!) -> Void in
-                if granted{
-                    var event:EKEvent = EKEvent(eventStore: store)
-                    event.title = self.eventTitle!.text
-                    println(self.eventData.startDateObj)
-                    event.startDate = (self.eventData.startDateObj == nil) ? nil : self.eventData.startDateObj
-                    println(self.eventData.endDateObj)
-                    event.endDate = (self.eventData.endDateObj == nil) ? nil : self.eventData.endDateObj
-                    event.calendar = store.defaultCalendarForNewEvents
-                    store.saveEvent(event, span: EKSpanThisEvent, error: nil)
-                    println("Saved Event")
-                    Toast.showToastInParentView(self.view, withText: "Saved Event", withDuration: 1.0)
-                } else{
-                    return
-                }
-        })
+        let eventStore = EKEventStore()
+        println(self.eventData.startDateObj!.descriptionWithLocale(NSLocale.currentLocale()))
+        println(self.eventData.endDateObj!.descriptionWithLocale(NSLocale.currentLocale()))
+        eventStore.requestAccessToEntityType(EKEntityTypeEvent) {
+            (granted: Bool, err: NSError!) in
+            println(granted)
+            println(err)
+            if granted && !err {
+                var event:EKEvent = EKEvent(eventStore: eventStore)
+                event.title = self.eventTitle!.text
+                event.startDate = self.eventData.startDateObj
+                event.endDate = self.eventData.endDateObj
+                event.calendar = eventStore.defaultCalendarForNewEvents
+                eventStore.saveEvent(event, span: EKSpanThisEvent, error: nil)
+                println("Saved Event")
+                Toast.showToastInParentView(self.view, withText: "Saved Event", withDuration: 1.0)
+            }
+        }
+//            store.requestAccessToEntityType(EKEntityTypeEvent, completion: { (granted: Bool, error: NSError!) -> Void in
+//                if granted{
+//                    var event:EKEvent = EKEvent(eventStore: store)
+//                    event.title = self.eventTitle!.text
+//                    event.startDate = (self.eventData.startDateObj == nil) ? nil : self.eventData.startDateObj
+//                    event.endDate = (self.eventData.endDateObj == nil) ? nil : self.eventData.endDateObj
+//                    event.calendar = store.defaultCalendarForNewEvents
+//                    store.saveEvent(event, span: EKSpanThisEvent, error: nil)
+//                    println("Saved Event")
+//                    Toast.showToastInParentView(self.view, withText: "Saved Event", withDuration: 1.0)
+//                } else{
+//                    return
+//                }
+//            })
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -231,7 +244,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             } else{
                 toastText = "Going to \(self.eventData.name)"
             }
-            Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
+//            Toast.showToastInParentView(self.view, withText: toastText, withDuration: 1.5)
             self.eventData.eventStatus = self.eventStatus
         }
     }

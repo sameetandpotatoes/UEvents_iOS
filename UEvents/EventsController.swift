@@ -124,11 +124,15 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
         var cell:UITableViewCell?
         var index = indexPath.row
         if (listItem is NSString){
-            cell = DateCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "EventCell")
+            if cell == nil{
+                cell = DateCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "EventCell")
+            }
             (cell as DateCell).date.text = listItem as NSString
         }
         if (listItem is Event){
-            cell = EventCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "EventCell")
+            if cell == nil{
+                cell = EventCell(style: UITableViewCellStyle.Subtitle, reuseIdentifier: "EventCell")
+            }
             var rowData:Event = self.tableData[index] as Event
             
             (cell as EventCell).eventTitle.text = rowData.name as String

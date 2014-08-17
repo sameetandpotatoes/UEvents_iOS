@@ -19,8 +19,8 @@
 @property User *model;
 @property ENVRouter *env;
 @property NSMutableData *responseData;
-@property id<FBGraphUser> cachedUser;
 @property int loggedOut;
+@property AppearanceController *appearanceController;
 @end
 @implementation PageContentViewController
 
@@ -35,7 +35,19 @@
 
 - (void) viewDidLoad {
     [super viewDidLoad];
-    
+    self.appearanceController = [[AppearanceController alloc] init];
+    if ([_titleText isEqualToString:@"1"]){
+        [self.introDescription setHidden:YES];
+        [self.swipeText setHidden:NO];
+        self.pageControl.currentPage = 1;
+    } else{
+        [self.swipeText setHidden:YES];
+        [self.introDescription setHidden:NO];
+        if ([self.appearanceController isIPAD]){
+            self.introDescription.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:25.0];
+        }
+        self.pageControl.currentPage = 2;
+    }
     self.backgroundImageView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundImageView.image = [UIImage imageNamed:self.imageFile];
     self.backgroundImageView.backgroundColor = [UIColor whiteColor];
@@ -84,7 +96,7 @@
     // get the app delegate, so that we can reference the session property
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
     if (appDelegate.session.isOpen) {
-        [self.buttonLoginLogout setTitle:@"Log out" forState:UIControlStateNormal];
+//        [self.buttonLoginLogout setTitle:@"Log out" forState:UIControlStateNormal];
 //        dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeGradient];
 //            for (int i = 1; i <= 10000; i++)
@@ -120,7 +132,7 @@
         });
     } else {
         // login-needed account UI is shown whenever the session is closed
-        [self.buttonLoginLogout setTitle:@"Log in" forState:UIControlStateNormal];
+//        [self.buttonLoginLogout setTitle:@"Log in" forState:UIControlStateNormal];
     }
 }
 - (void)didReceiveMemoryWarning
@@ -166,20 +178,21 @@
                               @"Content-type": @"application/json"};
     
     NSMutableDictionary *json= [[NSMutableDictionary alloc] init];
-    [json setObject:self.model.firstName forKey:@"first_name"];
-    [json setObject:self.model.lastName forKey:@"last_name"];
-    [json setObject:self.model.pictureURL forKey:@"picture_url"];
-    [json setObject:self.model.id forKey:@"id"];
-    [json setObject:self.model.email forKey:@"email"];
-    [json setObject:self.model.accessToken forKey:@"access_token"];
-    [json setObject:@"" forKey:@"school_id"];
-    
+    NSMutableDictionary *realJson= [[NSMutableDictionary alloc] init];
+    [realJson setObject:json forKey:@"user"];
+    [realJson setObject:self.model.firstName forKey:@"first_name"];
+    [realJson setObject:self.model.lastName forKey:@"last_name"];
+    [realJson setObject:self.model.pictureURL forKey:@"picture_url"];
+    [realJson setObject:self.model.id forKey:@"id"];
+    [realJson setObject:self.model.email forKey:@"email"];
+    [realJson setObject:self.model.accessToken forKey:@"access_token"];
+    [realJson setObject:@"" forKey:@"school_id"];
     UNIHTTPJsonResponse* response = [[UNIRest postEntity:^(UNIBodyRequest* request) {
         [request setUrl:[self.env getPostUserURL]];
         NSLog([self.env getPostUserURL]);
         [request setHeaders:headers];
         // Converting NSDictionary to JSON
-        [request setBody:[NSJSONSerialization dataWithJSONObject:json options:0 error:nil]];
+        [request setBody:[NSJSONSerialization dataWithJSONObject:realJson options:0 error:nil]];
     }] asJson];
     NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
     NSLog(@"%@", result);

@@ -12,11 +12,11 @@ class ENVRouter: NSObject{
     var localENV:String = "http://uevents.192.168.1.75.xip.io:20559/"
 //    var localENV:String = "http://localhost:3000/"
     var prodENV:String = "http://www.uevents.io/"
-    var eventsURL:String = "api/events.json"
-    var userEventsURL:String = "api/events/user.json"
-    var postUserURL:String = "api/users"
-    var updateUserURL:String = "api/users/"
-    var singleEventURL:String = "api/events/"
+    var eventsURL:String = "api/v2/events.json"
+    var userEventsURL:String = "api/v2/events/user.json"
+    var postUserURL:String = "api/v2/users"
+    var updateUserURL:String = "api/v2/users/"
+    var singleEventURL:String = "api/v2/events/"
     var user:User = User()
     init(curUser: User){
         user = curUser

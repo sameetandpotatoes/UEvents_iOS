@@ -18,7 +18,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
     @IBOutlet var pageControl:UIPageControl?
     override func viewDidLoad() {
         super.viewDidLoad()
-        pageTitles = ["", ""]
+        pageTitles = ["1", "2"]
         pageImages = ["Slideshow - 4", "Slideshow - 5"]
         self.pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
         self.pageViewController.dataSource = self

@@ -28,7 +28,7 @@ class User:NSObject{
         lastName = user.valueForKey("last_name") as String
         id = user.valueForKey("id") as String
         email = user.valueForKey("email") as String
-        pictureURL = "http://graph.facebook.com/"+id+"/picture?type=square"
+        pictureURL = "http://graph.facebook.com/"+id+"/picture?width=200&height=200"
     }
     func setAuthToken(at: String){
         authToken = at
