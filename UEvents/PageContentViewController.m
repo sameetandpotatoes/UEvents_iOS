@@ -86,7 +86,6 @@
                                                              FBSessionState status,
                                                              NSError *error) {
                 // we recurse here, in order to update buttons and labels
-                NSLog(session.accessTokenData.accessToken);
                 [self updateView];
             }];
         }
@@ -158,7 +157,6 @@
                                                          FBSessionState status,
                                                          NSError *error) {
             // and here we make sure to update our UX according to the new session state
-            NSLog(session.accessTokenData.accessToken);
             [self updateView];
         }];
     }

@@ -16,44 +16,45 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
     var user:User!
     var appearanceController: AppearanceController = AppearanceController()
     var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
+    var api:APIController!
     override func viewDidLoad(){
         setUpUI()
-        var api = APIController(curUser: self.user)
-        api.schoolsP = self
-        api.getSchools()
         SVProgressHUD.dismiss()
     }
+    override func viewDidAppear(animated: Bool) {
+        dispatch_async(dispatch_get_main_queue()){
+            //API request to get schools
+            self.api = APIController(curUser: self.user)
+            self.api.schoolsP = self
+            self.api.getSchools()
+            UIView.setAnimationsEnabled(true)
+        }
+    }
+    //Only rotate screen if iPad
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()
     }
     func setUpUI(){
-        self.navigationController.navigationBarHidden = false
-        self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-        self.navigationItem.title = "Choose Your School"
-        self.navigationController.interactivePopGestureRecognizer.enabled = false;
-        self.navigationController.navigationBar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
-        self.navigationController.navigationBar.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
-        self.navigationItem.hidesBackButton = true
-        self.navigationController.toolbar.opaque = true
-        self.navigationController.toolbar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
-        self.navigationController.toolbarHidden = true
-        fixAnimation()
-    }
-    func fixAnimation(){
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-            //make calculations
-            dispatch_async(dispatch_get_main_queue(),{
-                UIView.setAnimationsEnabled(true)
-            })
-        })
+        dispatch_async(dispatch_get_main_queue()){
+            self.navigationController.navigationBarHidden = false
+            self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+            self.navigationItem.title = "Choose Your School"
+            self.navigationController.interactivePopGestureRecognizer.enabled = false;
+            self.navigationController.navigationBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
+            self.navigationController.navigationBar.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
+            self.navigationItem.hidesBackButton = true
+            self.navigationController.toolbar.opaque = true
+            self.navigationController.toolbar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
+            self.navigationController.toolbarHidden = true
+        }
     }
     func didReceiveSchools(results: NSArray) {
         self.tableData = results
-        println(results)
         self.tableView.reloadData()
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        //For use in Google Analytics
         self.screenName = "Selecting School"
     }
     func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
@@ -66,7 +67,7 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
         return cell
     }
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!){
-        //Post to API
+        //Post school_id to API
         var env:ENVRouter = ENVRouter(curUser: user!)
         var listItem:NSDictionary = tableData[indexPath.row] as NSDictionary
         var headers:NSMutableDictionary = NSMutableDictionary()
@@ -84,7 +85,8 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
             as EventsController
         user!.schoolName = listItem["name"] as String
         allEvents.user = user!
-        self.navigationController.pushViewController(allEvents, animated: false)
+        allEvents.tag = "All"
+        self.navigationController.pushViewController(allEvents, animated: true)
     }
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat{
         return 50

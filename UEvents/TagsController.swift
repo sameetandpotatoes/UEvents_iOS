@@ -11,7 +11,7 @@ import UIKit
 import QuartzCore
 
 class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
-    var user:User?
+    var user:User!
     @IBOutlet var collectionView : UICollectionView?
     var firstTime:Bool = true
     var appearanceController: AppearanceController = AppearanceController()
@@ -39,29 +39,34 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         }
     }
     func setUpUI(){
-        self.navigationController.interactivePopGestureRecognizer.enabled = false;
-        self.navigationController.navigationBar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
-        self.navigationController.navigationBar.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
-        self.navigationItem.setHidesBackButton(true, animated: true)
-        self.navigationController.toolbar.opaque = true
-        self.navigationController.toolbar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
-        self.navigationController.toolbarHidden = false
-        self.navigationController.interactivePopGestureRecognizer.enabled = false;
-        self.view.userInteractionEnabled = true
-        allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
-        allEvents.tintColor = UIColor.lightGrayColor()
-        settings.width = appearanceController.width/4 - settings.image.size.width/2
-        settings.tintColor = UIColor.lightGrayColor()
-        myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
-        myEvents.tintColor = UIColor.lightGrayColor()
-        tags.width = appearanceController.width/4 - tags.image.size.width/2
-        tags.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
+        dispatch_async(dispatch_get_main_queue()){
+            self.navigationController.interactivePopGestureRecognizer.enabled = false;
+            self.navigationController.navigationBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
+            self.navigationController.navigationBar.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
+            self.navigationItem.setHidesBackButton(true, animated: true)
+            self.navigationController.toolbar.opaque = true
+            self.navigationController.toolbar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
+            self.navigationController.toolbarHidden = false
+            self.navigationController.interactivePopGestureRecognizer.enabled = false;
+            self.view.userInteractionEnabled = true
+            //Use half of image width to center toolbar icons exactly in the middle
+            self.allEvents.width = self.appearanceController.width/4 - self.allEvents.image.size.width/2
+            self.allEvents.tintColor = UIColor.lightGrayColor()
+            self.settings.width = self.appearanceController.width/4 - self.settings.image.size.width/2
+            self.settings.tintColor = UIColor.lightGrayColor()
+            self.myEvents.width = self.appearanceController.width/4 - self.myEvents.image.size.width/2
+            self.myEvents.tintColor = UIColor.lightGrayColor()
+            self.tags.width = self.appearanceController.width/4 - self.tags.image.size.width/2
+            self.tags.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
+        }
     }
+    //Only rotate if iPad
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        //For use in Google Analytics
         self.screenName = "Tags"
     }
     func collectionView(collectionView: UICollectionView!, numberOfItemsInSection section: Int) -> Int{
@@ -101,10 +106,11 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         filter = filter.stringByReplacingOccurrencesOfString("&", withString: "%26", options: NSStringCompareOptions.LiteralSearch, range: nil)
         let events:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         events.tag = filter
-        events.user = user!
+        events.user = user
         self.navigationController.pushViewController(events, animated: true)
     }
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize{
+        //Double the size on an iPad
         if appearanceController.isIPAD(){
             return CGSizeMake(300, 300)
         } else{
@@ -113,24 +119,24 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     }
     @IBAction func settings(sender : AnyObject) {
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
-        settings.user = user!
+        settings.user = user
         self.navigationController.pushViewController(settings, animated: false)
     }
     @IBAction func tags(sender: AnyObject){
         var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
-        tagsController.user = user!
+        tagsController.user = user
         self.navigationController.pushViewController(tagsController, animated: false)
     }
     @IBAction func myEvents(sender: AnyObject){
         var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
-        myEvents.user = user!
+        myEvents.user = user
         myEvents.tag = "User"
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject) {
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
             as EventsController
-        allEvents.user = user!
+        allEvents.user = user
         allEvents.tag = "All"
         self.navigationController.pushViewController(allEvents, animated: false)
     }

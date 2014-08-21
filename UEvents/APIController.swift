@@ -21,19 +21,19 @@ protocol SchoolsProtocol {
     func didReceiveSchools(results: NSArray)
 }
 class APIController: NSObject {
-    var allEvents:NSURLConnection?
-    var filter:NSURLConnection?
-    var userEvents:NSURLConnection?
-    var schools:NSURLConnection?
-    var allEventsP: AllEventsProtocol?
-    var filterP: FilteredProtocol?
-    var userEventsP: MyEventsProtocol?
-    var schoolsP: SchoolsProtocol?
-    var env:ENVRouter?
+    var allEvents   :NSURLConnection?
+    var filter      :NSURLConnection?
+    var userEvents  :NSURLConnection?
+    var schools     :NSURLConnection?
+    var allEventsP  :AllEventsProtocol?
+    var filterP     :FilteredProtocol?
+    var userEventsP :MyEventsProtocol?
+    var schoolsP    :SchoolsProtocol?
+    var env:ENVRouter!
     var data = NSMutableData()
     var eventsArray = NSArray()
     var schoolsArray = NSArray()
-    var user:User = User()
+    var user:User!
     init(curUser: User){
         user = curUser
         env = ENVRouter(curUser: user)
@@ -43,7 +43,7 @@ class APIController: NSObject {
     * @param tag The tag to filter events
     */
     func getEvents(tag: String!){
-        var urlPath = env!.getFilterURL(tag)
+        var urlPath = env.getFilterURL(tag)
         println(urlPath)
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
@@ -80,7 +80,7 @@ class APIController: NSObject {
         println(urlPath)
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
-        schools = NSURLConnection(request: request, delegate: self, startImmediately: true)
+        schools = NSURLConnection(request: request, delegate: self, startImmediately: false)
         schools!.start()
     }
     func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
@@ -127,20 +127,18 @@ class APIController: NSObject {
             //Already handled error if connection failed
         }
         var objectEvents:Array<NSObject> = []
-        if eventsArray.count > 2{
-            formatDate()
-            //Iterate through and add both dates and events to new array
-            for index in 0..<eventsArray.count{
-                var rowData:NSDictionary = eventsArray[index] as NSDictionary
-                if let events = rowData["events"] as? NSArray{
-                    //Only add dates if there are events for that date
-                    if events.count > 0 {
-                        objectEvents.append(rowData["date"] as NSString)
-                    }
-                    for event in 0..<events.count {
-                        var currentEvent:Event = Event(rowData: events[event] as NSDictionary)
-                        objectEvents.append(currentEvent)
-                    }
+        formatDate()
+        //Iterate through and add both dates and events to new array
+        for index in 0..<eventsArray.count{
+            var rowData:NSDictionary = eventsArray[index] as NSDictionary
+            if let events = rowData["events"] as? NSArray{
+                //Only add dates if there are events for that date
+                if events.count > 0 {
+                    objectEvents.append(rowData["date"] as NSString)
+                }
+                for event in 0..<events.count {
+                    var currentEvent:Event = Event(rowData: events[event] as NSDictionary)
+                    objectEvents.append(currentEvent)
                 }
             }
         }

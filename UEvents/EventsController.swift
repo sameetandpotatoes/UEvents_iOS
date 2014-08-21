@@ -79,7 +79,7 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.navigationController.navigationBar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             self.navigationController.navigationBar.tintColor = self.appearance.hexToUI(self.c["Solid"]!["White"]!)
-            self.navigationController.toolbar.opaque = true
+//            self.navigationController.toolbar.opaque = true
             self.navigationController.toolbar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             self.navigationController.toolbarHidden = false
             self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
@@ -221,7 +221,6 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             let singleEvent = self.storyboard.instantiateViewControllerWithIdentifier("details") as EventDetailController
             //Pass along the data
             singleEvent.eventStatus = rowData.eventStatus
-            singleEvent.userId = user!.userId
             singleEvent.user = user
             singleEvent.eventData = rowData
             self.navigationController.pushViewController(singleEvent, animated: true)
@@ -243,7 +242,11 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     {
         dispatch_async(dispatch_get_main_queue()) {
             self.refreshControl.beginRefreshing()
-            self.handleEventsReceived(self.tableData)
+            let delay = 1 * Double(NSEC_PER_SEC)
+            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+            dispatch_after(time, dispatch_get_main_queue(), {
+                self.handleEventsReceived(self.tableData)
+            })
         }
     }
     @IBAction func settings(sender : AnyObject) {

@@ -28,68 +28,20 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     
     @IBOutlet var rsvpSegButtons : UISegmentedControl?
     
-    var firstTimeA:Bool = true
-    var firstTimeC:Bool = true
     var attendingLayer:CALayer = CALayer()
     var tagLayer:CALayer = CALayer()
     var eventStatus:String = "declining"
     var appearance:AppearanceController = AppearanceController()
     var c:Dictionary<String, Dictionary<String, String>>!
     var eventData:Event!
-    var userId:String = String()
     var height:CGFloat = 0
-    var user:User?
-    var env:ENVRouter?
-    /**
-    * Handles sharing text and opens UIActivityViewController
-    */
-    func sharing(){
-        var text = ""
-        if eventWhere!.text == "No Location"{
-            text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhen!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
-        } else{
-            text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhere!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
-        }
-        var controller:UIActivityViewController = UIActivityViewController(activityItems: [text], applicationActivities: nil)
-        self.presentViewController(controller, animated: true, completion: nil)
-    }
-    /**
-    * Formats event data to be put in a calendar
-    */
-    func addToCal(){
-        let eventStore = EKEventStore()
-        var eventSaved:Bool = false
-        eventStore.requestAccessToEntityType(EKEntityTypeEvent) {
-            (granted: Bool, err: NSError!) in
-            if granted {
-                var event:EKEvent = EKEvent(eventStore: eventStore)
-                event.title = self.eventTitle!.text
-                event.startDate = self.eventData.startDateObj
-                event.endDate = self.eventData.endDateObj
-                event.calendar = eventStore.defaultCalendarForNewEvents
-                eventStore.saveEvent(event, span: EKSpanThisEvent, error: nil)
-                eventSaved = true
-            } else{
-                eventSaved = false
-            }
-            dispatch_async(dispatch_get_main_queue()) {
-                if (eventSaved){
-                    SVProgressHUD.showSuccessWithStatus("Event saved successfully!")
-                } else{
-                    SVProgressHUD.showErrorWithStatus("Failed to save event")
-                }
-                let delay = 1 * Double(NSEC_PER_SEC)
-                let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-                dispatch_after(time, dispatch_get_main_queue(), {
-                    SVProgressHUD.dismiss()
-                })
-            }
-        }
-    }
+    var user:User!
+    var env:ENVRouter!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         c = appearance.getColors()
-        env = ENVRouter(curUser: self.user!)
+        env = ENVRouter(curUser: self.user)
         addToolbar()
         getRSVPStatus()
         updateView()
@@ -108,8 +60,10 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        //For use in Google Analytics
         self.screenName = "Viewing Single Event \(eventTitle!.text)"
     }
+    //Only rotate if iPad
     override func shouldAutorotate() -> Bool {
         return appearance.isIPAD()
     }
@@ -124,25 +78,39 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         //Customizing UISegmentedControl
         var constraint:NSLayoutConstraint = NSLayoutConstraint(item: self.rsvpSegButtons, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 44)
         self.rsvpSegButtons!.addConstraint(constraint)
-        var customFont:UIFont = UIFont(name: "HelveticaNeue", size: 17.0)
-        self.rsvpSegButtons!.setTitleTextAttributes([NSFontAttributeName : customFont], forState: UIControlState.Normal)
+
         self.eventAttending!.frame = CGRectMake(self.rsvpSegButtons!.frame.origin.x,
             self.rsvpSegButtons!.frame.origin.y+self.rsvpSegButtons!.frame.height,
             self.rsvpSegButtons!.frame.width/3,
             self.rsvpSegButtons!.frame.height)
         self.tagHolder.frame = CGRectMake(self.eventAttending!.frame.origin.x+self.eventAttending!.frame.width, self.eventAttending!.frame.origin.y, self.eventAttending!.frame.width * 2, self.eventAttending!.frame.height)
         
-        attendingLayer = appearance.addTopBottomBorder(self.eventAttending!)
+        /*
+            Event Attending and Tag Holder frames are changing, so we need to
+            update the the CALayers that correspond to these UILabels or UIViews.
+        */
+        attendingLayer = appearance.addBottomBorder(self.eventAttending!)
         tagLayer = appearance.addBottomBorder(self.tagHolder)
     }
     func updateView(){
         dispatch_async(dispatch_get_main_queue()) {
-            //UI Changes
-            self.rsvpSegButtons!.tintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
+            //UISegmentedControl UI Changes
+            self.rsvpSegButtons!.tintColor = self.appearance.hexToUI(self.c["Solid"]!["Gray"]!)
             self.rsvpSegButtons!.frame = CGRectMake(self.rsvpSegButtons!.frame.origin.x,
                 self.rsvpSegButtons!.frame.origin.y,
                 self.rsvpSegButtons!.frame.width,
                 44)
+            var customFont:UIFont = UIFont(name: "HelveticaNeue", size: 16.0)
+            //Change font and non-selected segment text color
+            self.rsvpSegButtons!.setTitleTextAttributes([NSForegroundColorAttributeName : self.appearance.hexToUI(self.c["Normal"]!["P"]!), NSFontAttributeName : customFont], forState: UIControlState.Normal)
+//            self.rsvpSegButtons!.setTitleTextAttributes([NSBackgroundColorAttributeName : self.appearance.hexToUI(self.c["Normal"]!["P"]!)], forState: UIControlState.Selected)
+            //Change background color of selected segment
+//            for subview in self.rsvpSegButtons!.subviews{
+//                if (subview.isKindOfClass(UIControl)){
+//                    println("Found selected")
+//                    (subview as UIView).tintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
+//                }
+//            }
             self.navigationController.toolbarHidden = true
             self.scrollView!.scrollEnabled = true
             
@@ -211,7 +179,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
                     self.firstTag.text = dictOne["name"] as String
                 }
             } else{
-                //Add default tag so that its less awkward
+                //Add default tag so that it shows something if there are no tags for an event
                 self.firstTag.text = "All Events"
             }
             if tagArray.count == 2{
@@ -235,9 +203,14 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             //Update height constraint on UITextView so it can scroll
             self.heightConstraint.constant = height
             
+            //Add the gray borders to tag view and event attending
             self.addBorders()
         }
     }
+    /**
+    * Handler for when UISegmentedControl is clicked. Updates
+    * event status and posts to api
+    */
     @IBAction func rsvpStatusChanged(sender : UISegmentedControl) {
         var newEventStatus:String
         switch(sender.selectedSegmentIndex){
@@ -260,7 +233,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             headers.setValue("application/json", forKey: "Content-type")
             var userParam = ["" : ""]
             var response:UNIHTTPJsonResponse = (UNIRest.postEntity({ (request: UNIBodyRequest!) -> Void in
-                request.url = self.env!.getSingleEventURL(self.eventData.id, eventStatus: self.eventStatus)
+                request.url = self.env.getSingleEventURL(self.eventData.id, eventStatus: self.eventStatus)
                 request.headers = headers
                 request.body = NSJSONSerialization.dataWithJSONObject(userParam, options: NSJSONWritingOptions.PrettyPrinted, error: nil)
             })).asJson()
@@ -273,7 +246,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     * updates UISegmentedControl
     */
     func getRSVPStatus(){
-        FBRequestConnection.startWithGraphPath("/\(eventData.id)/\(eventStatus)/\(userId)?access_token=\(user!.accessToken)", completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
+        FBRequestConnection.startWithGraphPath("/\(eventData.id)/\(eventStatus)/\(user.userId)?access_token=\(user.accessToken)", completionHandler: {(connection: FBRequestConnection!, result: AnyObject!, error: NSError!) -> Void in
                 if error == nil {
                     var jsonFeeds = result as FBGraphObject
                     var feeds = jsonFeeds["data"] as NSMutableArray
@@ -296,6 +269,53 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
     */
     func addBorders(){
         self.tagHolder.layer.addSublayer(self.tagLayer)
-    //  self.eventAttending!.layer.addSublayer(self.attendingLayer)
+        self.eventAttending!.layer.addSublayer(self.attendingLayer)
+    }
+    /**
+    * Handles sharing text and opens UIActivityViewController
+    */
+    func sharing(){
+        var text = ""
+        if eventWhere!.text == "No Location"{
+            text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhen!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
+        } else{
+            text = "Hey, I'm interested in \(eventTitle!.text) at \(eventWhere!.text). Want to join me? \n\nFind more events with UEvents, available on the App Store or the Play Store.\n\n\n\n\nhttp://www.uevents.io"
+        }
+        var controller:UIActivityViewController = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    /**
+    * Formats event data to be put in user's default Calendar application
+    */
+    func addToCal(){
+        let eventStore = EKEventStore()
+        var eventSaved:Bool = false
+        eventStore.requestAccessToEntityType(EKEntityTypeEvent) {
+            (granted: Bool, err: NSError!) in
+            if granted {
+                var event:EKEvent = EKEvent(eventStore: eventStore)
+                event.title = self.eventTitle!.text
+                event.startDate = self.eventData.startDateObj
+                event.endDate = self.eventData.endDateObj
+                event.calendar = eventStore.defaultCalendarForNewEvents
+                eventStore.saveEvent(event, span: EKSpanThisEvent, error: nil)
+                eventSaved = true
+            } else{
+                eventSaved = false
+            }
+            dispatch_async(dispatch_get_main_queue()) {
+                if (eventSaved){
+                    SVProgressHUD.showSuccessWithStatus("Event saved successfully!")
+                } else{
+                    SVProgressHUD.showErrorWithStatus("Failed to save event")
+                }
+                //1 second delay to dismiss SVProgressHUD
+                let delay = 1 * Double(NSEC_PER_SEC)
+                let time = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+                dispatch_after(time, dispatch_get_main_queue(), {
+                    SVProgressHUD.dismiss()
+                })
+            }
+        }
     }
 }
