@@ -20,7 +20,7 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     var width = UIScreen.mainScreen().bounds.size.width
     var height = UIScreen.mainScreen().bounds.size.height
     var tagPhotos:[String] = ["Tag-All", "Tag-Food", "Tag-Music", "Tag-Nightlife", "Tag-Off-Campus","Tag-Sports"]
-    var dividingFactor:CGFloat = 2
+    var dividingFactor:CGFloat = 2.75
     @IBOutlet var scrollView : UIScrollView?
     
     @IBOutlet weak var allEvents: UIBarButtonItem!
@@ -40,12 +40,13 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
-        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
-        self.navigationItem.hidesBackButton = true
+        self.navigationController.navigationBar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
+        self.navigationController.navigationBar.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
+        self.navigationItem.setHidesBackButton(true, animated: true)
         self.navigationController.toolbar.opaque = true
-        self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        self.navigationController.toolbar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
         self.navigationController.toolbarHidden = false
+        self.navigationController.interactivePopGestureRecognizer.enabled = false;
         self.view.userInteractionEnabled = true
         allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
         allEvents.tintColor = UIColor.lightGrayColor()
@@ -54,7 +55,7 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         myEvents.width = appearanceController.width/4 - myEvents.image.size.width/2
         myEvents.tintColor = UIColor.lightGrayColor()
         tags.width = appearanceController.width/4 - tags.image.size.width/2
-        tags.tintColor = appearanceController.colorWithHexString("#FFFFFF")
+        tags.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
     }
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()
@@ -70,10 +71,8 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         var cell:UICollectionViewCell = collectionView.dequeueReusableCellWithReuseIdentifier("TagCell", forIndexPath: indexPath) as UICollectionViewCell
         var tagImage:UIImageView = UIImageView()
         tagImage.contentMode = UIViewContentMode.ScaleAspectFit
-//        tagImage.contentMode = UIViewContentMode.ScaleAspectFill
         tagImage.image = UIImage(named: tagPhotos[indexPath.row])
         tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y+10, appearanceController.width/dividingFactor, appearanceController.height/4)
-//        tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y + 10, 500, 500)
         cell.backgroundView = tagImage
         return cell
     }
@@ -106,9 +105,11 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         self.navigationController.pushViewController(events, animated: true)
     }
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize{
-//        let image = UIImage(named: tagPhotos[indexPath.row])
-        return CGSizeMake(300, 300)
-//        return CGSizeMake(appearanceController.width/dividingFactor, appearanceController.height/3.5)
+        if appearanceController.isIPAD(){
+            return CGSizeMake(300, 300)
+        } else{
+            return CGSizeMake(appearanceController.width/2, 150)
+        }
     }
     @IBAction func settings(sender : AnyObject) {
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController

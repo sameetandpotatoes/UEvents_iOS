@@ -13,16 +13,19 @@ class AppearanceController: NSObject{
     var height = UIScreen.mainScreen().bounds.size.height
     override init(){
         super.init()
-        colorsHash["Default"] = ["Primary" : "#00000", "Secondary" : "#FFFFFF", "Primary_Pressed" : ""]
-        self.addSchools()
     }
     func getColors() -> Dictionary<String, Dictionary<String, String>>{
+        colorsHash["Solid"] = ["Black" : "#00000", "White" : "#FFFFFF", "Gray" : "#D3D3D3"]
+        colorsHash["Normal"] = ["P" : "#8f3931", "S" : "#8a9045"]
         return colorsHash
     }
-    func addSchools(){
-        colorsHash["UChicago"] = ["Primary" : "#8f3931", "Secondary" : "#8a9045", "Primary_Pressed" : ""]
-    }
-    func colorWithHexString (hex:String) -> UIColor {
+    /**
+    * Converts hex to UIColor
+    *
+    * @param hex Color as a hex string
+    * @return color as a UIColor
+    */
+    func hexToUI (hex:String) -> UIColor {
         var cString:String = hex.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).uppercaseString
         if (cString.hasPrefix("#")) {
             cString = cString.substringFromIndex(advance(cString.startIndex,1))
@@ -42,6 +45,11 @@ class AppearanceController: NSObject{
         var blue:CGFloat = CGFloat(Double(b) / 255.0)
         return UIColor(red: red, green: green, blue: blue, alpha: CGFloat(1))
     }
+    /**
+    * Bolds first word of text with specific size
+    *
+    * @return Properly formatted text as NSMutableAttributedString
+    */
     func boldText(#textToBold: String, fullText: String, size: CGFloat) -> NSMutableAttributedString{
         var mutableString:NSMutableAttributedString = NSMutableAttributedString(string: "\(textToBold) \(fullText)")
         var customHelvetica = UIFont(name: "HelveticaNeue", size: size)
@@ -53,11 +61,22 @@ class AppearanceController: NSObject{
         mutableString.addAttribute(NSParagraphStyleAttributeName, value: paragraphStyle, range: NSMakeRange(0, mutableString.length))
         return mutableString
     }
+    /**
+    * Bolds first word of text with specific size and specific color
+    *
+    * @return Properly formatted text as NSMutableAttributedString
+    */
     func boldTextWithColor(#textToBold: String, fullText: String, size: CGFloat, color: UIColor) -> NSMutableAttributedString{
         let mutableString = boldText(textToBold: textToBold, fullText: fullText, size: size)
         mutableString.addAttribute(NSForegroundColorAttributeName, value: color, range: NSMakeRange(0, countElements(textToBold)))
         return mutableString
     }
+    /**
+    * Darkens image so text can be clearly visible
+    *
+    * @param level Alpha level of image
+    * @return Darkened Image
+    */
     func darkenImage(#image: UIImage, level: CGFloat) -> UIImage{
         var frame:CGRect = CGRectMake(0, 0, image.size.width, image.size.height)
         var tempView:UIView = UIView(frame: frame)
@@ -80,5 +99,32 @@ class AppearanceController: NSObject{
     }
     func isIPAD() -> Bool{
         return UIDevice.currentDevice().userInterfaceIdiom == .Pad
+    }
+    /**
+    * Adds gray border to top and bottom of a UILabel
+    *
+    * @return CALayer with border
+    */
+    func addTopBottomBorder(label: UILabel) -> CALayer{
+        var top:CALayer = CALayer()
+        top.borderColor = hexToUI("#d3d3d3").CGColor
+        top.borderWidth = 1
+        top.frame = CGRectMake(0,0, CGRectGetWidth(label.frame),
+            CGRectGetHeight(label.frame) + 2)
+        return top
+    }
+    /**
+    * Adds gray border bottom of a UILabel
+    *
+    * @return CALayer with border
+    */
+    func addBottomBorder(label: UIView) -> CALayer{
+        var top:CALayer = CALayer()
+        top.borderColor = hexToUI("#d3d3d3").CGColor
+        top.borderWidth = 1
+        top.masksToBounds = true
+        top.frame = CGRectMake(-1,-1, CGRectGetWidth(label.frame),
+            CGRectGetHeight(label.frame) + 2)
+        return top
     }
 }

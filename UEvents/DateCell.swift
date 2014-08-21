@@ -11,14 +11,15 @@ import UIKit
 class DateCell:UITableViewCell{
     var date:UILabel = UILabel()
     var appearanceController: AppearanceController = AppearanceController()
-    var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
+    var colors:Dictionary<String, Dictionary<String, String>>!
     override init(style: UITableViewCellStyle, reuseIdentifier: String!){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        colors = appearanceController.getColors()
         var frame:CGRect = CGRectMake(10, 5, UIScreen.mainScreen().bounds.size.width, 25)
         date.frame = frame
-        date.textColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        date.textColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
         date.font = UIFont(name: "HelveticaNeue", size: 16.0)
-        self.contentView.backgroundColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
+        self.contentView.backgroundColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
         self.contentView.addSubview(date)
     }
     required init(coder aDecoder: NSCoder!) {

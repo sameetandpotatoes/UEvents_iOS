@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		24A5102101F840C890FF2899 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1312411FABB34A2287DCEC3E /* libPods.a */; };
-		C6189A4519660DC900C7F37F /* Toast.m in Sources */ = {isa = PBXBuildFile; fileRef = C6189A4419660DC900C7F37F /* Toast.m */; };
 		C618E148196394CA008E377E /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = C618E147196394CA008E377E /* Event.swift */; };
 		C61F65021969C26A00EB6962 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61F65011969C26A00EB6962 /* EventCell.swift */; };
 		C61F65041969CA4400EB6962 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61F65031969CA4400EB6962 /* DateCell.swift */; };
@@ -21,7 +20,6 @@
 		C640971119608EF6007C9096 /* UEventsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C640971019608EF6007C9096 /* UEventsTests.swift */; };
 		C64AD664196245CD001A58E5 /* APIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64AD663196245CD001A58E5 /* APIController.swift */; };
 		C64AD66619624D1E001A58E5 /* EventDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64AD66519624D1E001A58E5 /* EventDetailController.swift */; };
-		C651781D1995B15A00DA0E85 /* SchoolAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651781C1995B15A00DA0E85 /* SchoolAPI.swift */; };
 		C65191301964B9FF00E62726 /* PageContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C651912F1964B9FF00E62726 /* PageContentViewController.m */; };
 		C65560D8199BB04A0042D217 /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65560D7199BB04A0042D217 /* DateFormatter.swift */; };
 		C65C56661994092500533F4B /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C656203D19940870006BB1C2 /* CoreImage.framework */; };
@@ -56,8 +54,6 @@
 
 /* Begin PBXFileReference section */
 		1312411FABB34A2287DCEC3E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		C6189A4319660DAB00C7F37F /* Toast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Toast.h; sourceTree = "<group>"; };
-		C6189A4419660DC900C7F37F /* Toast.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Toast.m; sourceTree = "<group>"; };
 		C618E147196394CA008E377E /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		C61F65011969C26A00EB6962 /* EventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
 		C61F65031969CA4400EB6962 /* DateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
@@ -74,7 +70,6 @@
 		C640971019608EF6007C9096 /* UEventsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UEventsTests.swift; sourceTree = "<group>"; };
 		C64AD663196245CD001A58E5 /* APIController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIController.swift; sourceTree = "<group>"; };
 		C64AD66519624D1E001A58E5 /* EventDetailController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailController.swift; sourceTree = "<group>"; };
-		C651781C1995B15A00DA0E85 /* SchoolAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchoolAPI.swift; sourceTree = "<group>"; };
 		C651912F1964B9FF00E62726 /* PageContentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageContentViewController.m; sourceTree = "<group>"; };
 		C65560D7199BB04A0042D217 /* DateFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
 		C656203D19940870006BB1C2 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
@@ -262,8 +257,6 @@
 		C69E1C201997FAFE00E77E81 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C6189A4319660DAB00C7F37F /* Toast.h */,
-				C6189A4419660DC900C7F37F /* Toast.m */,
 				C61F65011969C26A00EB6962 /* EventCell.swift */,
 				C61F65031969CA4400EB6962 /* DateCell.swift */,
 			);
@@ -273,7 +266,6 @@
 		C69E1C211997FB4C00E77E81 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				C651781C1995B15A00DA0E85 /* SchoolAPI.swift */,
 				C64AD663196245CD001A58E5 /* APIController.swift */,
 			);
 			name = API;
@@ -433,7 +425,6 @@
 			files = (
 				C6B6F04C1967AFE800B37367 /* TagsController.swift in Sources */,
 				C6B5FE481960F7210062ECBC /* EventsController.swift in Sources */,
-				C651781D1995B15A00DA0E85 /* SchoolAPI.swift in Sources */,
 				C6B9B080199C411D00802768 /* PageContentViewController.swift in Sources */,
 				C629BACD19665E5200870E12 /* SettingsController.swift in Sources */,
 				C65560D8199BB04A0042D217 /* DateFormatter.swift in Sources */,
@@ -448,7 +439,6 @@
 				C61F65021969C26A00EB6962 /* EventCell.swift in Sources */,
 				C65191301964B9FF00E62726 /* PageContentViewController.m in Sources */,
 				C6A8FAE319635A8C0042E61C /* AppearanceController.swift in Sources */,
-				C6189A4519660DC900C7F37F /* Toast.m in Sources */,
 				C64AD66619624D1E001A58E5 /* EventDetailController.swift in Sources */,
 				C64AD664196245CD001A58E5 /* APIController.swift in Sources */,
 			);
@@ -587,6 +577,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "UEvents/UEvents-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = NO;
 			};
 			name = Debug;
@@ -615,6 +606,7 @@
 				PROVISIONING_PROFILE = "";
 				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "UEvents/UEvents-Bridging-Header.h";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

@@ -17,14 +17,18 @@ protocol FilteredProtocol {
 protocol MyEventsProtocol {
     func didReceiveUserEvents(results: Array<NSObject>)
 }
+protocol SchoolsProtocol {
+    func didReceiveSchools(results: NSArray)
+}
 class APIController: NSObject {
     var allEvents:NSURLConnection?
     var filter:NSURLConnection?
     var userEvents:NSURLConnection?
-    
+    var schools:NSURLConnection?
     var allEventsP: AllEventsProtocol?
     var filterP: FilteredProtocol?
     var userEventsP: MyEventsProtocol?
+    var schoolsP: SchoolsProtocol?
     var env:ENVRouter?
     var data = NSMutableData()
     var eventsArray = NSArray()
@@ -34,6 +38,10 @@ class APIController: NSObject {
         user = curUser
         env = ENVRouter(curUser: user)
     }
+    /**
+    * Starts the request to obtain events
+    * @param tag The tag to filter events
+    */
     func getEvents(tag: String!){
         var urlPath = env!.getFilterURL(tag)
         println(urlPath)
@@ -42,31 +50,46 @@ class APIController: NSObject {
         filter = NSURLConnection(request: request, delegate: self, startImmediately: true)
         filter!.start()
     }
+    /**
+    * Starts the request to obtain user's events
+    */
     func getUserEvents(){
         var urlPath = env!.getUserEventsURL()
+        println(urlPath)
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
         userEvents = NSURLConnection(request: request, delegate: self, startImmediately: true)
         userEvents!.start()
     }
+    /**
+    * Starts the request to all events for events index page
+    */
     func getEvents() {
         var urlPath = env!.getEventsURL()
+        println(urlPath)
         var url: NSURL = NSURL(string: urlPath)
         var request: NSURLRequest = NSURLRequest(URL: url)
         allEvents = NSURLConnection(request: request, delegate: self, startImmediately: true)
         allEvents!.start()
+    }
+    /**
+    * Starts the request to obtain schools available
+    */
+    func getSchools(){
+        var urlPath = env!.getSchoolsURL()
+        println(urlPath)
+        var url: NSURL = NSURL(string: urlPath)
+        var request: NSURLRequest = NSURLRequest(URL: url)
+        schools = NSURLConnection(request: request, delegate: self, startImmediately: true)
+        schools!.start()
     }
     func connection(connection: NSURLConnection!, didFailWithError error: NSError!) {
         println("Connection failed.\(error.localizedDescription)")
         var alert:UIAlertView = UIAlertView(title: "Error Retrieving Events", message: "Please check your internet connection and try again.", delegate: self, cancelButtonTitle: "Ok")
         alert.show()
     }
-    func connection(connection: NSURLConnection, didReceiveResponse response: NSURLResponse)  {
-        println("Received response")
-    }
     func connection(didReceiveResponse: NSURLConnection!, didReceiveResponse response: NSURLResponse!) {
         // Received a new request, clear out the data object
-        println("Received new request")
         self.data = NSMutableData()
     }
     func connection(connection: NSURLConnection!, didReceiveData data: NSData!) {
@@ -74,11 +97,11 @@ class APIController: NSObject {
         self.data.appendData(data)
     }
     func parseEvents(connection: NSURLConnection!){
-        var dataAsString: NSString = NSString(data: self.data, encoding: NSUTF8StringEncoding)
         //Convert the retrieved data in to an object through JSON deserialization
         var error: AutoreleasingUnsafeMutablePointer<NSError?> = nil
-        var jsonObject:AnyObject = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: error)
-        if jsonObject != nil{
+        var jsonObject:AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: error)
+        
+        if !jsonObject.isEqual(nil){
             if allEvents == connection || filter == connection{
                 if let nsDict = jsonObject as? NSDictionary{
                     if let swiftDict = nsDict as Dictionary?{
@@ -90,22 +113,27 @@ class APIController: NSObject {
                     if let swiftDict = nsDict as Dictionary?{
                         if let userNS = swiftDict["user"] as? NSDictionary{
                             if let user = userNS as Dictionary?{
-                                eventsArray = user["events"] as NSArray
+                                eventsArray = user["event_groups"] as NSArray
                             }
                         }
                     }
                 }
+            } else{
+                schoolsArray = jsonObject as NSArray
+                //Bypass all of the events filtering
+                schoolsP!.didReceiveSchools(schoolsArray)
             }
         } else{
-            //ERROR
+            //Already handled error if connection failed
         }
         var objectEvents:Array<NSObject> = []
         if eventsArray.count > 2{
             formatDate()
-        
+            //Iterate through and add both dates and events to new array
             for index in 0..<eventsArray.count{
                 var rowData:NSDictionary = eventsArray[index] as NSDictionary
                 if let events = rowData["events"] as? NSArray{
+                    //Only add dates if there are events for that date
                     if events.count > 0 {
                         objectEvents.append(rowData["date"] as NSString)
                     }
@@ -116,6 +144,11 @@ class APIController: NSObject {
                 }
             }
         }
+        //If there were no events, display something to the user
+        if (objectEvents.count == 0){
+            objectEvents.append("No events under this category")
+        }
+        //Callback
         if (allEvents == connection){
             allEventsP!.didReceiveAllEvents(objectEvents)
         } else if (userEvents == connection){
@@ -127,15 +160,17 @@ class APIController: NSObject {
     func connectionDidFinishLoading(connection: NSURLConnection!) {
         parseEvents(connection)
     }
+    /**
+    * Iterates over "date" objects in raw json result and formats them
+    */
     func formatDate(){
-        if eventsArray.count == 1{
-            return
-        }
         for index in 0..<eventsArray.count {
             var rowData: NSDictionary = eventsArray[index] as NSDictionary
-            var rawDate:String = rowData["date"] as String
-            var formattedDate:String = DateFormatter.formatDate(input: rawDate)
-            rowData.setValue(formattedDate, forKey: "date")
+            if !rowData.isEqual(nil){ //Just being extra careful here so we don't run into any errors
+                var rawDate:String = rowData["date"] as String
+                var formattedDate:String = DateFormatter.formatDate(input: rawDate)
+                rowData.setValue(formattedDate, forKey: "date")
+            }
         }
     }
 }

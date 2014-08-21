@@ -13,7 +13,10 @@
 #import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
 #import "PageContentViewController.h"
-#import "Toast.h"
+
+#import <UNIRest.h>
+#import <SVProgressHUD/SVProgressHUD.h>
+
 #import "GAI.h"
 #import "GAIDictionaryBuilder.h"
 #import "GAIEcommerceFields.h"
@@ -24,5 +27,3 @@
 #import "GAILogger.h"
 #import "GAITrackedViewController.h"
 #import "GAITracker.h"
-#import <UNIRest.h>
-#import <SVProgressHUD/SVProgressHUD.h>

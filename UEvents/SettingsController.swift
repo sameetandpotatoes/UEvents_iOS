@@ -14,30 +14,36 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     @IBOutlet weak var school: UILabel!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet var profilePictureView : UIImageView?
-    var activeTabLayer:CALayer = CALayer()
     var appearanceController: AppearanceController = AppearanceController()
-    var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
+    var colors:Dictionary<String, Dictionary<String, String>>!
     @IBOutlet weak var settings: UIBarButtonItem!
     @IBOutlet weak var myEvents: UIBarButtonItem!
     @IBOutlet weak var tags: UIBarButtonItem!
     @IBOutlet weak var allEvents: UIBarButtonItem!
     var user:User?
-    var alreadyLoggedOut:Bool = false
     override func viewDidLoad() {
-        var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(user!.id)/picture?width=200&height=200")
-        setUpUI()
-        var imgData: NSData = NSData(contentsOfURL: imgURL)
-        profilePictureView!.image = UIImage(data: imgData)
-        profilePictureView!.layer.cornerRadius = profilePictureView!.frame.size.width/2
-        profilePictureView!.layer.masksToBounds = true
-        profilePictureView!.layer.borderWidth = 0
+        colors = appearanceController.getColors()
+        self.setUpUI()
+        var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(self.user!.userId)/picture?width=200&height=200")
+        var request: NSURLRequest = NSURLRequest(URL: imgURL)
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
+            if error == nil {
+                var imgData: NSData = NSData(contentsOfURL: imgURL)
+                self.profilePictureView!.image = UIImage(data: imgData)
+            }
+            else {
+                println("Error: \(error.localizedDescription)")
+            }
+        })
+        self.profilePictureView!.layer.cornerRadius = self.profilePictureView!.frame.size.width/2
+        self.profilePictureView!.layer.masksToBounds = true
+        self.profilePictureView!.layer.borderWidth = 0
         if (self.respondsToSelector("setEdgesForExtendedLayout:")) { // if iOS 7
             self.edgesForExtendedLayout = UIRectEdge.None //layout adjustements
         }
-        name.text = user!.name
-        school.text = user!.schoolName as String
-        self.loginButton.backgroundColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-        fixAnimation()
+        self.name.text = self.user!.name
+        self.school.text = self.user!.schoolName as String
+        self.loginButton.backgroundColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
     }
     func fixAnimation(){
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
@@ -49,11 +55,11 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
     }
     func setUpUI(){
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
-        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
+        self.navigationController.navigationBar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
+        self.navigationController.navigationBar.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
         self.navigationItem.hidesBackButton = true
         self.navigationController.toolbar.opaque = true
-        self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        self.navigationController.toolbar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
         self.navigationController.toolbarHidden = false
         self.view.userInteractionEnabled = true
         allEvents.width = appearanceController.width/4 - allEvents.image.size.width/2
@@ -69,8 +75,6 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         super.viewWillAppear(animated)
         self.screenName = "Settings"
     }
-
-    
     @IBAction func handleLogOut(sender: AnyObject) {
         var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
         FBSession.activeSession().closeAndClearTokenInformation()
@@ -79,26 +83,22 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         self.navigationController.pushViewController(home, animated: true)
     }
     @IBAction func settings(sender : AnyObject) {
-        self.activeTabLayer.removeFromSuperlayer()
         var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
         settings.user = user!
         self.navigationController.pushViewController(settings, animated: false)
     }
     @IBAction func tags(sender: AnyObject){
-        self.activeTabLayer.removeFromSuperlayer()
         var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
         tagsController.user = user!
         self.navigationController.pushViewController(tagsController, animated: false)
     }
     @IBAction func myEvents(sender: AnyObject){
-        self.activeTabLayer.removeFromSuperlayer()
         var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         myEvents.user = user!
         myEvents.tag = "User"
         self.navigationController.pushViewController(myEvents, animated: false)
     }
     @IBAction func allEvents(sender: AnyObject){
-        self.activeTabLayer.removeFromSuperlayer()
         var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
         allEvents.user = user!
         allEvents.tag = "All"

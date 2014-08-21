@@ -39,14 +39,14 @@
     if ([_titleText isEqualToString:@"1"]){
         [self.introDescription setHidden:YES];
         [self.swipeText setHidden:NO];
-        self.pageControl.currentPage = 1;
+        [self.pageControl setCurrentPage:0];
     } else{
         [self.swipeText setHidden:YES];
         [self.introDescription setHidden:NO];
         if ([self.appearanceController isIPAD]){
             self.introDescription.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:25.0];
         }
-        self.pageControl.currentPage = 2;
+        [self.pageControl setCurrentPage:1];
     }
     self.backgroundImageView.frame = CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height);
     self.backgroundImageView.image = [UIImage imageNamed:self.imageFile];
@@ -86,6 +86,7 @@
                                                              FBSessionState status,
                                                              NSError *error) {
                 // we recurse here, in order to update buttons and labels
+                NSLog(session.accessTokenData.accessToken);
                 [self updateView];
             }];
         }
@@ -96,14 +97,7 @@
     // get the app delegate, so that we can reference the session property
     AppDelegate *appDelegate = [[UIApplication sharedApplication]delegate];
     if (appDelegate.session.isOpen) {
-//        [self.buttonLoginLogout setTitle:@"Log out" forState:UIControlStateNormal];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeGradient];
-//            for (int i = 1; i <= 10000; i++)
-//            {
-//                NSLog(@"%d", i);
-//            }
-//        });
+        [SVProgressHUD showWithMaskType:SVProgressHUDMaskTypeGradient];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             // long-running code
             NSString *apiRequest = [NSString stringWithFormat:@"https://graph.facebook.com/me?access_token=%@", appDelegate.session.accessTokenData.accessToken];
@@ -164,6 +158,7 @@
                                                          FBSessionState status,
                                                          NSError *error) {
             // and here we make sure to update our UX according to the new session state
+            NSLog(session.accessTokenData.accessToken);
             [self updateView];
         }];
     }
@@ -179,11 +174,10 @@
     
     NSMutableDictionary *json= [[NSMutableDictionary alloc] init];
     NSMutableDictionary *realJson= [[NSMutableDictionary alloc] init];
-    [realJson setObject:json forKey:@"user"];
     [realJson setObject:self.model.firstName forKey:@"first_name"];
     [realJson setObject:self.model.lastName forKey:@"last_name"];
     [realJson setObject:self.model.pictureURL forKey:@"picture_url"];
-    [realJson setObject:self.model.id forKey:@"id"];
+    [realJson setObject:self.model.userId forKey:@"id"];
     [realJson setObject:self.model.email forKey:@"email"];
     [realJson setObject:self.model.accessToken forKey:@"access_token"];
     [realJson setObject:@"" forKey:@"school_id"];
@@ -195,12 +189,19 @@
         [request setBody:[NSJSONSerialization dataWithJSONObject:realJson options:0 error:nil]];
     }] asJson];
     NSDictionary *result = [NSJSONSerialization JSONObjectWithData:[response rawBody] options:0 error:nil];
+    NSLog(@"RESULT");
     NSLog(@"%@", result);
     if (result != nil){
         self.model.authToken = [[result valueForKey:@"user"] valueForKey:@"authentication_token"];
         self.model.schoolName = [[result valueForKey:@"user"] valueForKey:@"school_name"];
-        self.model.schoolId = [[result valueForKey:@"user"] valueForKey:@"school_id"];
-        return !(self.model.schoolId == [NSNull null]);
+        NSDictionary *school = [[result valueForKey:@"user"] valueForKey:@"school"];
+        if (!(school == [NSNull null])){
+            self.model.schoolId = [school valueForKey:@"id"];
+            self.model.schoolName = [school valueForKey:@"name"];
+            return !(self.model.schoolId == [NSNull null]);
+        } else{
+            return false;
+        }
     } else{
         return false;
     }

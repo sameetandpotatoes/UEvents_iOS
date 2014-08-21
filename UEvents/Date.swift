@@ -14,16 +14,26 @@ class Date:NSDate{
         let dateStringFormatter = NSDateFormatter()
         dateStringFormatter.dateFormat = "yyyy-MM-dd"
         dateStringFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-        let d = dateStringFormatter.dateFromString(dateString)
+        var d:NSDate! = dateStringFormatter.dateFromString(dateString)
         self.init(timeInterval:0, sinceDate:d)
     }
-    class func parseDate(dateStr:String, format:String="yyyy-MM-dd") -> NSDate {
+    /**
+    * Creates NSDate object from dateString
+    * @param dateString Input date
+    * @param format format of dateString
+    */
+    class func parseDate(dateStr:String, format:String="yyyy-MM-dd") -> NSDate! {
         var dateFmt = NSDateFormatter()
         dateFmt.timeZone = NSTimeZone.defaultTimeZone()
         dateFmt.dateFormat = format
         return dateFmt.dateFromString(dateStr)
     }
-    class func parseTime(dateStr:String, format:String="yyyy'-'MM'-'dd'T'HH':'mm':'ss") -> NSDate {
+    /**
+    * Creates NSDate object from dateString
+    * @param dateStr Input date with time
+    * @param format format of dateStr
+    */
+    class func parseTime(dateStr:String, format:String="yyyy'-'MM'-'dd'T'HH':'mm':'ss") -> NSDate! {
         var dateFmt = NSDateFormatter()
         dateFmt.timeZone = NSTimeZone.defaultTimeZone()
         dateFmt.dateFormat = format

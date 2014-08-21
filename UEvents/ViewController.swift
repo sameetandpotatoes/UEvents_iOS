@@ -11,15 +11,17 @@ import UIKit
 
 class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, UINavigationControllerDelegate {
     
-    var pageViewController : UIPageViewController = UIPageViewController()
+    var pageViewController:UIPageViewController = UIPageViewController()
     var appearanceController:AppearanceController = AppearanceController()
     var pageTitles:NSArray = []
     var pageImages:NSArray = []
     @IBOutlet var pageControl:UIPageControl?
     override func viewDidLoad() {
         super.viewDidLoad()
+        //For use in PageContentViewController
         pageTitles = ["1", "2"]
         pageImages = ["Slideshow - 4", "Slideshow - 5"]
+        
         self.pageViewController = UIPageViewController(transitionStyle: UIPageViewControllerTransitionStyle.Scroll, navigationOrientation: UIPageViewControllerNavigationOrientation.Horizontal, options: nil)
         self.pageViewController.dataSource = self
         var startingViewController:PageContentViewController = self.viewControllerAtIndex(0)!
@@ -29,18 +31,9 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         self.addChildViewController(pageViewController)
         self.view.addSubview(pageViewController.view)
         self.pageViewController.didMoveToParentViewController(self)
-        var colors:Dictionary<String, Dictionary<String, String>> = appearanceController.getColors()
+        
         self.navigationController.navigationBarHidden = true
         self.navigationController.toolbarHidden = true
-        fixAnimation()
-    }
-    func fixAnimation(){
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-            //make calculations
-            dispatch_async(dispatch_get_main_queue(),{
-                UIView.setAnimationsEnabled(true)
-            })
-        })
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -55,7 +48,6 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
     func pageViewController(pageViewController: UIPageViewController!, viewControllerBeforeViewController viewController: UIViewController!) -> UIViewController!{
         var pcvc:PageContentViewController = viewController as PageContentViewController
         var index:Int = Int(pcvc.pageIndex)
-        var uIndex:UInt = UInt(index)
         self.pageControl!.currentPage = Int(index)
         if (index == 0) || (index == Foundation.NSNotFound){
             return nil;
@@ -66,12 +58,12 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
     func pageViewController(pageViewController: UIPageViewController!, viewControllerAfterViewController viewController: UIViewController!) -> UIViewController!{
         var pcvc:PageContentViewController = viewController as PageContentViewController
         var index:Int = Int(pcvc.pageIndex)
-        self.pageControl!.currentPage = Int(index)
+        self.pageControl!.currentPage = index
         if index == Foundation.NSNotFound{
             return nil
         }
         index++;
-        if (Int(index) == self.pageTitles.count){
+        if (index == self.pageTitles.count){
             return nil
         }
         return self.viewControllerAtIndex(Int(index))
@@ -81,6 +73,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
             return nil
         }
         var pageContentViewController:PageContentViewController = self.storyboard.instantiateViewControllerWithIdentifier("PageContentViewController") as PageContentViewController
+        //Gets appropriate image and title associated with page
         pageContentViewController.imageFile = pageImages[index] as NSString
         pageContentViewController.titleText = pageTitles[index] as NSString
         pageContentViewController.pageIndex = UInt(index)

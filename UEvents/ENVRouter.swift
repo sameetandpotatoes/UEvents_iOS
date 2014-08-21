@@ -9,18 +9,23 @@
 import Foundation
 
 class ENVRouter: NSObject{
-    var localENV:String = "http://uevents.192.168.1.75.xip.io:20559/"
-//    var localENV:String = "http://localhost:3000/"
+//    var localENV:String = "http://uevents.192.168.1.75.xip.io:20559/"
+    var localENV:String = "http://localhost:3000/"
     var prodENV:String = "http://www.uevents.io/"
     var eventsURL:String = "api/v2/events.json"
     var userEventsURL:String = "api/v2/events/user.json"
     var postUserURL:String = "api/v2/users"
     var updateUserURL:String = "api/v2/users/"
     var singleEventURL:String = "api/v2/events/"
+    var schoolsURL:String = "api/v2/schools.json"
     var user:User = User()
     init(curUser: User){
         user = curUser
     }
+    /**
+    * Determines if user is in local environment or production environment
+    * @return url depending on user environment
+    */
     func getENV() -> String{
 //        if UIDevice.currentDevice().model == "iPhone Simulator" {
 //            return localENV
@@ -36,7 +41,10 @@ class ENVRouter: NSObject{
         return getENV() + postUserURL
     }
     func getUpdateUserURL() -> String{
-        return getENV() + updateUserURL + user.id + getAuthToken()
+        return getENV() + updateUserURL + user.userId + getAuthToken()
+    }
+    func getSchoolsURL() -> String{
+        return getENV() + schoolsURL
     }
     func getEventsURL() -> String{
         return getENV() + eventsURL + getAuthToken()

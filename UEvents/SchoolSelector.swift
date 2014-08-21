@@ -13,12 +13,12 @@ import QuartzCore
 class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableViewDelegate, SchoolsProtocol{
     @IBOutlet weak var tableView: UITableView!
     var tableData: NSArray = NSArray()
-    var user:User?
+    var user:User!
     var appearanceController: AppearanceController = AppearanceController()
     var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
     override func viewDidLoad(){
         setUpUI()
-        var api = SchoolAPI()
+        var api = APIController(curUser: self.user)
         api.schoolsP = self
         api.getSchools()
         SVProgressHUD.dismiss()
@@ -31,11 +31,11 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
         self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationItem.title = "Choose Your School"
         self.navigationController.interactivePopGestureRecognizer.enabled = false;
-        self.navigationController.navigationBar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
-        self.navigationController.navigationBar.tintColor = appearanceController.colorWithHexString(colors["Default"]!["Secondary"]!)
+        self.navigationController.navigationBar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
+        self.navigationController.navigationBar.tintColor = appearanceController.hexToUI(colors["Solid"]!["White"]!)
         self.navigationItem.hidesBackButton = true
         self.navigationController.toolbar.opaque = true
-        self.navigationController.toolbar.barTintColor = appearanceController.colorWithHexString(colors["UChicago"]!["Primary"]!)
+        self.navigationController.toolbar.barTintColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
         self.navigationController.toolbarHidden = true
         fixAnimation()
     }
@@ -47,8 +47,9 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
             })
         })
     }
-    func didReceiveAPIResults(results: NSArray){
+    func didReceiveSchools(results: NSArray) {
         self.tableData = results
+        println(results)
         self.tableView.reloadData()
     }
     override func viewWillAppear(animated: Bool) {

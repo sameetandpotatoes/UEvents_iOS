@@ -29,10 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Appirater.setSignificantEventsUntilPrompt(3)
         Appirater.setTimeBeforeReminding(2)
         Appirater.appLaunched(true)
-        //GA
+        //Google Analytics
         GAI.sharedInstance().trackUncaughtExceptions = true
         GAI.sharedInstance().dispatchInterval = 20
         GAI.sharedInstance().trackerWithTrackingId("UA-43806248-2")
+        
+        self.window?.makeKeyAndVisible()
         return true
     }
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: NSString?, annotation: AnyObject) -> Bool {
