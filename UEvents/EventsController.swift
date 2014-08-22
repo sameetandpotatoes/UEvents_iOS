@@ -22,8 +22,8 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     var tableData: Array<NSObject> = Array<NSObject>()
     var imageCache = NSMutableDictionary()
     var refreshControl:UIRefreshControl!
-    var user:User?
-    var env:ENVRouter?
+    var user:User!
+    var env:ENVRouter!
     var tag:String = ""
     @IBOutlet var appsTableView : UITableView?
     @IBOutlet weak var allEvents: UIBarButtonItem!
@@ -45,7 +45,7 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     override func viewDidAppear(animated: Bool) {
         //Ensures that any UI changes are processed by UIKit correctly without disable animations
         dispatch_async(dispatch_get_main_queue()) {
-            self.api = APIController(curUser: self.user!)
+            self.api = APIController(curUser: self.user)
             self.refreshControl.beginRefreshing()
             self.staticDateText.textColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             if self.tag == "All" {
@@ -234,8 +234,8 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             } else{
                 return 150
             }
-        } else{
-            return 30
+        } else{ //DateCell
+            return 25
         }
     }
     func refresh(sender:AnyObject)

@@ -68,12 +68,8 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         return appearance.isIPAD()
     }
     override func viewDidLayoutSubviews() {
-        //Handles scrolling of event details - not perfect though
-        if appearance.isIPAD(){
-            self.scrollView!.contentSize = CGSizeMake(0, heightConstraint.constant + 400 + ((heightConstraint.constant / 10) * 3.7))
-        } else{
-            self.scrollView!.contentSize = CGSizeMake(0, heightConstraint.constant + 300 + ((heightConstraint.constant / 10) * 3))
-        }
+        //Handles scrolling of event details - almost perfect
+        self.scrollView!.contentSize = CGSizeMake(0, (heightConstraint.constant * 1.1) + 300)
         
         //Customizing UISegmentedControl
         var constraint:NSLayoutConstraint = NSLayoutConstraint(item: self.rsvpSegButtons, attribute: NSLayoutAttribute.Height, relatedBy: NSLayoutRelation.Equal, toItem: nil, attribute: NSLayoutAttribute.NotAnAttribute, multiplier: 1, constant: 44)
@@ -167,7 +163,7 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             
             
             //Attending
-            self.eventAttending!.attributedText = self.appearance.boldTextWithColor(textToBold: attending, fullText: "\nattending", size: 16.0, color: self.appearance.hexToUI(self.c["Normal"]!["P"]!))
+            self.eventAttending!.attributedText = self.appearance.boldTextWithColor(textToBold: attending, fullText: "\nattending", size: 22.0, color: self.appearance.hexToUI(self.c["Normal"]!["P"]!))
             self.eventAttending!.textAlignment = NSTextAlignment.Center
             self.eventAttending!.numberOfLines = 0
             

@@ -309,7 +309,7 @@
                                                     <constraint firstAttribute="height" constant="51" id="m63-xK-2dG"/>
                                                     <constraint firstAttribute="width" constant="198" id="mmN-Y4-42x"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="16"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="11"/>
                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>

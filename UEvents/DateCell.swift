@@ -15,7 +15,7 @@ class DateCell:UITableViewCell{
     override init(style: UITableViewCellStyle, reuseIdentifier: String!){
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         colors = appearanceController.getColors()
-        var frame:CGRect = CGRectMake(10, 5, UIScreen.mainScreen().bounds.size.width, 25)
+        var frame:CGRect = CGRectMake(10, 0, UIScreen.mainScreen().bounds.size.width, 25)
         date.frame = frame
         date.textColor = appearanceController.hexToUI(colors["Normal"]!["P"]!)
         date.font = UIFont(name: "HelveticaNeue", size: 16.0)
