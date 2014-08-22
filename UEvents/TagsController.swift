@@ -10,11 +10,12 @@ import Foundation
 import UIKit
 import QuartzCore
 
-class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout{
+class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UITabBarDelegate{
     var user:User!
     @IBOutlet var collectionView : UICollectionView?
+    @IBOutlet weak var mainTabBar: UITabBar!
     var firstTime:Bool = true
-    var appearanceController: AppearanceController = AppearanceController()
+    var appearance: AppearanceController = AppearanceController()
     var school:String = ""
     var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
     var width = UIScreen.mainScreen().bounds.size.width
@@ -31,38 +32,34 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        self.mainTabBar.delegate = self
         scrollView!.scrollEnabled = true
         self.collectionView!.registerClass(UICollectionViewCell.self, forCellWithReuseIdentifier: "TagCell")
         self.collectionView!.reloadData()
-        if appearanceController.isIPAD(){
+        if appearance.isIPAD(){
             dividingFactor = 2.75
         }
     }
     func setUpUI(){
         dispatch_async(dispatch_get_main_queue()){
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
-            self.navigationController.navigationBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
-            self.navigationController.navigationBar.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
+            self.navigationController.navigationBar.barTintColor = self.appearance.hexToUI(self.colors["Normal"]!["P"]!)
+            self.navigationController.navigationBar.tintColor = self.appearance.hexToUI(self.colors["Solid"]!["White"]!)
             self.navigationItem.setHidesBackButton(true, animated: true)
             self.navigationController.toolbar.opaque = true
-            self.navigationController.toolbar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
+            self.navigationController.toolbar.barTintColor = self.appearance.hexToUI(self.colors["Normal"]!["P"]!)
             self.navigationController.toolbarHidden = false
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.view.userInteractionEnabled = true
-            //Use half of image width to center toolbar icons exactly in the middle
-            self.allEvents.width = self.appearanceController.width/4 - self.allEvents.image.size.width/2
-            self.allEvents.tintColor = UIColor.lightGrayColor()
-            self.settings.width = self.appearanceController.width/4 - self.settings.image.size.width/2
-            self.settings.tintColor = UIColor.lightGrayColor()
-            self.myEvents.width = self.appearanceController.width/4 - self.myEvents.image.size.width/2
-            self.myEvents.tintColor = UIColor.lightGrayColor()
-            self.tags.width = self.appearanceController.width/4 - self.tags.image.size.width/2
-            self.tags.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
+            self.navigationController.toolbarHidden = true
+            self.mainTabBar.barTintColor = self.appearance.hexToUI(self.colors["Normal"]!["P"]!)
+            self.mainTabBar.selectedImageTintColor = UIColor.whiteColor()
+            self.mainTabBar.selectedItem = self.mainTabBar.items[1] as UITabBarItem
         }
     }
     //Only rotate if iPad
     override func shouldAutorotate() -> Bool {
-        return appearanceController.isIPAD()
+        return appearance.isIPAD()
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -77,7 +74,7 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
         var tagImage:UIImageView = UIImageView()
         tagImage.contentMode = UIViewContentMode.ScaleAspectFit
         tagImage.image = UIImage(named: tagPhotos[indexPath.row])
-        tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y+10, appearanceController.width/dividingFactor, appearanceController.height/4)
+        tagImage.frame = CGRectMake(tagImage.frame.origin.x, tagImage.frame.origin.y+10, appearance.width/dividingFactor, appearance.height/4)
         cell.backgroundView = tagImage
         return cell
     }
@@ -111,33 +108,35 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     }
     func collectionView(collectionView: UICollectionView!, layout collectionViewLayout: UICollectionViewLayout!, sizeForItemAtIndexPath indexPath: NSIndexPath!) -> CGSize{
         //Double the size on an iPad
-        if appearanceController.isIPAD(){
+        if appearance.isIPAD(){
             return CGSizeMake(300, 300)
         } else{
-            return CGSizeMake(appearanceController.width/2, 150)
+            return CGSizeMake(appearance.width/2, 150)
         }
     }
-    @IBAction func settings(sender : AnyObject) {
-        var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
-        settings.user = user
-        self.navigationController.pushViewController(settings, animated: false)
-    }
-    @IBAction func tags(sender: AnyObject){
-        var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
-        tagsController.user = user
-        self.navigationController.pushViewController(tagsController, animated: false)
-    }
-    @IBAction func myEvents(sender: AnyObject){
-        var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
-        myEvents.user = user
-        myEvents.tag = "User"
-        self.navigationController.pushViewController(myEvents, animated: false)
-    }
-    @IBAction func allEvents(sender: AnyObject) {
-        var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
-            as EventsController
-        allEvents.user = user
-        allEvents.tag = "All"
-        self.navigationController.pushViewController(allEvents, animated: false)
+    func tabBar(tabBar: UITabBar!, didSelectItem item: UITabBarItem!){
+        switch(tabBar.selectedItem.title){
+        case "All Events":
+            var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
+                as EventsController
+            allEvents.user = user!
+            allEvents.tag = "All"
+            self.navigationController.pushViewController(allEvents, animated: false)
+        case "Tags":
+            var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
+            tagsController.user = user!
+            self.navigationController.pushViewController(tagsController, animated: false)
+        case "My Events":
+            var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
+            myEvents.user = user!
+            myEvents.tag = "User"
+            self.navigationController.pushViewController(myEvents, animated: false)
+        case "Settings":
+            var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
+            settings.user = user!
+            self.navigationController.pushViewController(settings, animated: false)
+        default:
+            println("not possible")
+        }
     }
 }

@@ -9,25 +9,24 @@
 import Foundation
 import UIKit
 import QuartzCore
-class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
+class SettingsController: GAITrackedViewController, FBLoginViewDelegate, UITabBarDelegate{
     @IBOutlet weak var name: UILabel!
     @IBOutlet weak var school: UILabel!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet var profilePictureView : UIImageView?
+    
+    @IBOutlet weak var mainTabBar: UITabBar!
     var appearanceController: AppearanceController = AppearanceController()
     var colors:Dictionary<String, Dictionary<String, String>>!
-    @IBOutlet weak var settings: UIBarButtonItem!
-    @IBOutlet weak var myEvents: UIBarButtonItem!
-    @IBOutlet weak var tags: UIBarButtonItem!
-    @IBOutlet weak var allEvents: UIBarButtonItem!
     var user:User!
     override func viewDidLoad() {
         colors = appearanceController.getColors()
         self.setUpUI()
-        
+        self.mainTabBar.delegate = self
         //Updating Image and Text
         dispatch_async(dispatch_get_main_queue()){
             //Update image
+            self.mainTabBar.selectedItem = self.mainTabBar.items[3] as UITabBarItem
             var imgURL: NSURL = NSURL(string: "http://graph.facebook.com/\(self.user.userId)/picture?width=200&height=200")
             var request: NSURLRequest = NSURLRequest(URL: imgURL)
             NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue(), completionHandler: {(response: NSURLResponse!,data: NSData!,error: NSError!) -> Void in
@@ -55,18 +54,10 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
             self.navigationController.navigationBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
             self.navigationController.navigationBar.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
             self.navigationItem.hidesBackButton = true
-            self.navigationController.toolbar.opaque = true
-            self.navigationController.toolbar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
-            self.navigationController.toolbarHidden = false
+            self.navigationController.toolbarHidden = true
             self.view.userInteractionEnabled = true
-            self.allEvents.width = self.appearanceController.width/4 - self.allEvents.image.size.width/2
-            self.allEvents.tintColor = UIColor.lightGrayColor()
-            self.settings.width = self.appearanceController.width/4 - self.settings.image.size.width/2
-            self.settings.tintColor = UIColor.whiteColor()
-            self.myEvents.width = self.appearanceController.width/4 - self.myEvents.image.size.width/2
-            self.myEvents.tintColor = UIColor.lightGrayColor()
-            self.tags.width = self.appearanceController.width/4 - self.tags.image.size.width/2
-            self.tags.tintColor = UIColor.lightGrayColor()
+            self.mainTabBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
+            self.mainTabBar.selectedImageTintColor = UIColor.whiteColor()
             UIView.setAnimationsEnabled(true)
         }
     }
@@ -75,35 +66,28 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate{
         //For use in Google Analytics
         self.screenName = "Settings"
     }
-    @IBAction func handleLogOut(sender: AnyObject) {
-        var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        //Double checking both sessions are closed and cleared
-        FBSession.activeSession().closeAndClearTokenInformation()
-        appDelegate.session!.closeAndClearTokenInformation()
-        //Go back to home page
-        var home:UIViewController = self.storyboard.instantiateViewControllerWithIdentifier("login") as UIViewController
-        self.navigationController.pushViewController(home, animated: true)
-    }
-    @IBAction func settings(sender : AnyObject) {
-        var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
-        settings.user = user
-        self.navigationController.pushViewController(settings, animated: false)
-    }
-    @IBAction func tags(sender: AnyObject){
-        var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
-        tagsController.user = user
-        self.navigationController.pushViewController(tagsController, animated: false)
-    }
-    @IBAction func myEvents(sender: AnyObject){
-        var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
-        myEvents.user = user
-        myEvents.tag = "User"
-        self.navigationController.pushViewController(myEvents, animated: false)
-    }
-    @IBAction func allEvents(sender: AnyObject){
-        var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
-        allEvents.user = user
-        allEvents.tag = "All"
-        self.navigationController.pushViewController(allEvents, animated: false)
-    }
-}
+    func tabBar(tabBar: UITabBar!, didSelectItem item: UITabBarItem!){
+        switch(tabBar.selectedItem.title){
+        case "All Events":
+            var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
+                as EventsController
+            allEvents.user = user!
+            allEvents.tag = "All"
+            self.navigationController.pushViewController(allEvents, animated: false)
+        case "Tags":
+            var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
+            tagsController.user = user!
+            self.navigationController.pushViewController(tagsController, animated: false)
+        case "My Events":
+            var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
+            myEvents.user = user!
+            myEvents.tag = "User"
+            self.navigationController.pushViewController(myEvents, animated: false)
+        case "Settings":
+            var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
+            settings.user = user!
+            self.navigationController.pushViewController(settings, animated: false)
+        default:
+            println("not possible")
+        }
+    }}

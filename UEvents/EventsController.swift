@@ -11,8 +11,9 @@ import Foundation
 import QuartzCore
 import CoreImage
 
-class EventsController: GAITrackedViewController, UITableViewDataSource, UITableViewDelegate, AllEventsProtocol, FilteredProtocol, MyEventsProtocol{
+class EventsController: GAITrackedViewController, UITableViewDataSource, UITableViewDelegate, AllEventsProtocol, FilteredProtocol, MyEventsProtocol, UITabBarDelegate{
     
+    @IBOutlet weak var mainTabBar: UITabBar!
     @IBOutlet weak var staticDateText: UILabel!
     @IBOutlet weak var staticDate: UIView!
     var api:APIController!
@@ -25,20 +26,24 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     var user:User!
     var env:ENVRouter!
     var tag:String = ""
+    
     @IBOutlet var appsTableView : UITableView?
     @IBOutlet weak var allEvents: UIBarButtonItem!
     @IBOutlet weak var tags: UIBarButtonItem!
     @IBOutlet weak var settings: UIBarButtonItem!
     @IBOutlet weak var myEvents: UIBarButtonItem!
+    var tagsController:TagsController!
+    var eventsController:EventsController!
+    var settingsController:SettingsController!
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpUI()
+        self.mainTabBar.delegate = self
         SVProgressHUD.dismiss()
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         dispatch_async(dispatch_get_main_queue()) {
-            self.navigationController.toolbarHidden = false
             self.screenName = "Events | \(self.tag)"
         }
     }
@@ -50,26 +55,29 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.staticDateText.textColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             if self.tag == "All" {
                 self.navigationItem.title = "All Events"
-                //Set active icon
-                self.allEvents.tintColor = UIColor.whiteColor()
+                self.mainTabBar.selectedItem = self.mainTabBar.items[0] as UITabBarItem
                 self.api.allEventsP = self
                 self.api.getEvents()
             } else if self.tag == "User" {
                 self.navigationItem.title = "\(self.user!.firstName)'s Events"
-                //Set active icon
-                self.myEvents.tintColor = UIColor.whiteColor()
                 self.api.userEventsP = self
+                self.mainTabBar.selectedItem = self.mainTabBar.items[2] as UITabBarItem
                 self.api.getUserEvents()
             } else{
                 var titleFilter:String = self.tag.stringByReplacingOccurrencesOfString("%20", withString: " ", options: NSStringCompareOptions.LiteralSearch, range: nil)
                 titleFilter = titleFilter.stringByReplacingOccurrencesOfString("%26", withString: "&", options: NSStringCompareOptions.LiteralSearch, range: nil)
                 self.navigationItem.title = titleFilter.capitalizedString
-                self.tags.tintColor = UIColor.whiteColor()
+                self.mainTabBar.selectedItem = self.mainTabBar.items[1] as UITabBarItem
                 self.api.filterP = self
                 self.api.getEvents(self.tag)
             }
             UIView.setAnimationsEnabled(true)
         }
+    }
+    override func viewDidLayoutSubviews() {
+        dispatch_async(dispatch_get_main_queue(), {
+
+        })
     }
     func setUpUI(){
         dispatch_async(dispatch_get_main_queue(), {
@@ -81,21 +89,16 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.navigationController.navigationBar.tintColor = self.appearance.hexToUI(self.c["Solid"]!["White"]!)
 //            self.navigationController.toolbar.opaque = true
             self.navigationController.toolbar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
-            self.navigationController.toolbarHidden = false
+
             self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
             self.navigationItem.setHidesBackButton(true, animated: true)
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.view.userInteractionEnabled = true
-            self.allEvents.width = self.appearance.width/4 - self.allEvents.image.size.width/2
-            self.settings.width = self.appearance.width/4 - self.settings.image.size.width/2
-            self.myEvents.width = self.appearance.width/4 - self.myEvents.image.size.width/2
-            self.tags.width = self.appearance.width/4 - self.tags.image.size.width/2
-            self.allEvents.tintColor = UIColor.lightGrayColor()
-            self.tags.tintColor      = UIColor.lightGrayColor()
-            self.myEvents.tintColor  = UIColor.lightGrayColor()
-            self.settings.tintColor  = UIColor.lightGrayColor()
+
+            self.navigationController.toolbarHidden = true
             
-            
+            self.mainTabBar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
+            self.mainTabBar.selectedImageTintColor = UIColor.whiteColor()
             //Swipe Up to Refresh
             self.refreshControl = UIRefreshControl()
             self.refreshControl.attributedTitle = NSAttributedString(string: "Refreshing Events")
@@ -120,14 +123,6 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
     override func shouldAutorotate() -> Bool {
         return appearance.isIPAD()
     }
-//    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
-//        dispatch_async(dispatch_get_main_queue()) {
-//            self.allEvents.width = self.appearance.width/4 - self.allEvents.image.size.width/2
-//            self.settings.width = self.appearance.width/4 - self.settings.image.size.width/2
-//            self.myEvents.width = self.appearance.width/4 - self.myEvents.image.size.width/2
-//            self.tags.width = self.appearance.width/4 - self.tags.image.size.width/2
-//        }
-//    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -249,27 +244,29 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             })
         }
     }
-    @IBAction func settings(sender : AnyObject) {
-        var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
-        settings.user = user!
-        self.navigationController.pushViewController(settings, animated: false)
-    }
-    @IBAction func tags(sender: AnyObject){
-        var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
-        tagsController.user = user!
-        self.navigationController.pushViewController(tagsController, animated: false)
-    }
-    @IBAction func myEvents(sender: AnyObject){
-        var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
-        myEvents.user = user!
-        myEvents.tag = "User"
-        self.navigationController.pushViewController(myEvents, animated: false)
-    }
-    @IBAction func allEvents(sender: AnyObject){
-        var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
-            as EventsController
-        allEvents.user = user!
-        allEvents.tag = "All"
-        self.navigationController.pushViewController(allEvents, animated: false)
+    func tabBar(tabBar: UITabBar!, didSelectItem item: UITabBarItem!){
+        switch(tabBar.selectedItem.title){
+        case "All Events":
+            var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
+                as EventsController
+            allEvents.user = user!
+            allEvents.tag = "All"
+            self.navigationController.pushViewController(allEvents, animated: false)
+        case "Tags":
+            var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
+            tagsController.user = user!
+            self.navigationController.pushViewController(tagsController, animated: false)
+        case "My Events":
+            var myEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events") as EventsController
+            myEvents.user = user!
+            myEvents.tag = "User"
+            self.navigationController.pushViewController(myEvents, animated: false)
+        case "Settings":
+            var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
+            settings.user = user!
+            self.navigationController.pushViewController(settings, animated: false)
+        default:
+            println("not possible")
+        }
     }
 }
