@@ -39,6 +39,8 @@
 		C6D35CB11992B3AB009AD575 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6D35CB01992B3AB009AD575 /* UIKit.framework */; };
 		C6DC08D31992C716001435D4 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6DC08D21992C716001435D4 /* Accelerate.framework */; };
 		C6F3991719955EA0002E259B /* SchoolSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3991619955EA0002E259B /* SchoolSelector.swift */; };
+		C6F8A73B19A79F340033F7D3 /* TutorialPageContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F8A73A19A79F340033F7D3 /* TutorialPageContent.swift */; };
+		C6F8A73D19A79FAF0033F7D3 /* TutorialController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F8A73C19A79FAF0033F7D3 /* TutorialController.swift */; };
 		C6FFE19E19637480005790E9 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FFE19D19637480005790E9 /* Date.swift */; };
 /* End PBXBuildFile section */
 
@@ -100,6 +102,8 @@
 		C6D35CB01992B3AB009AD575 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C6DC08D21992C716001435D4 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		C6F3991619955EA0002E259B /* SchoolSelector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchoolSelector.swift; sourceTree = "<group>"; };
+		C6F8A73A19A79F340033F7D3 /* TutorialPageContent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialPageContent.swift; sourceTree = "<group>"; };
+		C6F8A73C19A79FAF0033F7D3 /* TutorialController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TutorialController.swift; sourceTree = "<group>"; };
 		C6FDC3931960D2F200EF423C /* UEvents-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UEvents-Bridging-Header.h"; sourceTree = "<group>"; };
 		C6FFE19D19637480005790E9 /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		F0052F0C6DF441CFAEAA4C31 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -240,6 +244,8 @@
 				C6B6F04B1967AFE800B37367 /* TagsController.swift */,
 				C6F3991619955EA0002E259B /* SchoolSelector.swift */,
 				C6B9B07F199C411D00802768 /* PageContentViewController.swift */,
+				C6F8A73A19A79F340033F7D3 /* TutorialPageContent.swift */,
+				C6F8A73C19A79FAF0033F7D3 /* TutorialController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -426,6 +432,7 @@
 				C6B6F04C1967AFE800B37367 /* TagsController.swift in Sources */,
 				C6B5FE481960F7210062ECBC /* EventsController.swift in Sources */,
 				C6B9B080199C411D00802768 /* PageContentViewController.swift in Sources */,
+				C6F8A73D19A79FAF0033F7D3 /* TutorialController.swift in Sources */,
 				C629BACD19665E5200870E12 /* SettingsController.swift in Sources */,
 				C65560D8199BB04A0042D217 /* DateFormatter.swift in Sources */,
 				C6787903199D281B0079137A /* ENVRouter.swift in Sources */,
@@ -435,6 +442,7 @@
 				C6A653F7199AA4F400C6AE2E /* User.swift in Sources */,
 				C6FFE19E19637480005790E9 /* Date.swift in Sources */,
 				C61F65041969CA4400EB6962 /* DateCell.swift in Sources */,
+				C6F8A73B19A79F340033F7D3 /* TutorialPageContent.swift in Sources */,
 				C6F3991719955EA0002E259B /* SchoolSelector.swift in Sources */,
 				C61F65021969C26A00EB6962 /* EventCell.swift in Sources */,
 				C65191301964B9FF00E62726 /* PageContentViewController.m in Sources */,

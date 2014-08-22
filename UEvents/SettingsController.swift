@@ -53,8 +53,12 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate, UITabBa
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.navigationController.navigationBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
             self.navigationController.navigationBar.tintColor = self.appearanceController.hexToUI(self.colors["Solid"]!["White"]!)
-            self.navigationItem.hidesBackButton = true
             self.navigationController.toolbarHidden = true
+            //Hide back button completely
+            self.navigationItem.setHidesBackButton(true, animated: true)
+            self.navigationController.navigationBar.topItem.title = ""
+            //But keep the centered title
+            self.navigationItem.title = "Settings"
             self.view.userInteractionEnabled = true
             self.mainTabBar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
             self.mainTabBar.selectedImageTintColor = UIColor.whiteColor()
@@ -65,6 +69,15 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate, UITabBa
         super.viewWillAppear(animated)
         //For use in Google Analytics
         self.screenName = "Settings"
+    }
+    @IBAction func handleLogOut(sender: AnyObject) {
+        var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        //Double checking both sessions are closed and cleared
+        FBSession.activeSession().closeAndClearTokenInformation()
+        appDelegate.session!.closeAndClearTokenInformation()
+        //Go back to home page
+        var home:UIViewController = self.storyboard.instantiateViewControllerWithIdentifier("login") as UIViewController
+        self.navigationController.pushViewController(home, animated: true)
     }
     func tabBar(tabBar: UITabBar!, didSelectItem item: UITabBarItem!){
         switch(tabBar.selectedItem.title){
@@ -84,6 +97,8 @@ class SettingsController: GAITrackedViewController, FBLoginViewDelegate, UITabBa
             myEvents.tag = "User"
             self.navigationController.pushViewController(myEvents, animated: false)
         case "Settings":
+            break
+            //Don't reload the entire class
             var settings:SettingsController = self.storyboard.instantiateViewControllerWithIdentifier("settings") as SettingsController
             settings.user = user!
             self.navigationController.pushViewController(settings, animated: false)

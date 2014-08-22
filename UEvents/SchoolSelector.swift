@@ -81,12 +81,16 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
         })).asJson()
         
         //Redirect to Events
-        var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
-            as EventsController
+//        var allEvents:EventsController = self.storyboard.instantiateViewControllerWithIdentifier("events")
+//            as EventsController
+//        user!.schoolName = listItem["name"] as String
+//        allEvents.user = user!
+//        allEvents.tag = "All"
+//        self.navigationController.pushViewController(allEvents, animated: true)
+        var tutorial:TutorialController = self.storyboard.instantiateViewControllerWithIdentifier("Tutorial") as TutorialController
         user!.schoolName = listItem["name"] as String
-        allEvents.user = user!
-        allEvents.tag = "All"
-        self.navigationController.pushViewController(allEvents, animated: true)
+        tutorial.user = user!
+        self.navigationController.pushViewController(tutorial, animated: true)
     }
     func tableView(tableView: UITableView!, heightForRowAtIndexPath indexPath: NSIndexPath!) -> CGFloat{
         return 50

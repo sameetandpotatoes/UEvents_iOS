@@ -19,7 +19,6 @@
 @property User *model;
 @property ENVRouter *env;
 @property NSMutableData *responseData;
-@property int loggedOut;
 @property AppearanceController *appearanceController;
 @end
 @implementation PageContentViewController
@@ -191,12 +190,11 @@
     NSLog(@"%@", result);
     if (result != nil){
         self.model.authToken = [[result valueForKey:@"user"] valueForKey:@"authentication_token"];
-        self.model.schoolName = [[result valueForKey:@"user"] valueForKey:@"school_name"];
         NSDictionary *school = [[result valueForKey:@"user"] valueForKey:@"school"];
         if (!(school == [NSNull null])){
             self.model.schoolId = [school valueForKey:@"id"];
             self.model.schoolName = [school valueForKey:@"name"];
-            return !(self.model.schoolId == [NSNull null]);
+            return true;
         } else{
             return false;
         }

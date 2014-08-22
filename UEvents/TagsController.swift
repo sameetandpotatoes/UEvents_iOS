@@ -14,7 +14,6 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     var user:User!
     @IBOutlet var collectionView : UICollectionView?
     @IBOutlet weak var mainTabBar: UITabBar!
-    var firstTime:Bool = true
     var appearance: AppearanceController = AppearanceController()
     var school:String = ""
     var colors:Dictionary<String, Dictionary<String, String>> = AppearanceController().getColors()
@@ -22,12 +21,9 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
     var height = UIScreen.mainScreen().bounds.size.height
     var tagPhotos:[String] = ["Tag-All", "Tag-Food", "Tag-Music", "Tag-Nightlife", "Tag-Off-Campus","Tag-Sports"]
     var dividingFactor:CGFloat = 2.75
-    @IBOutlet var scrollView : UIScrollView?
     
-    @IBOutlet weak var allEvents: UIBarButtonItem!
-    @IBOutlet weak var settings: UIBarButtonItem!
-    @IBOutlet weak var myEvents: UIBarButtonItem!
-    @IBOutlet weak var tags: UIBarButtonItem!
+    //Probably not needed but keeping just in case
+    @IBOutlet var scrollView : UIScrollView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,13 +41,15 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.navigationController.navigationBar.barTintColor = self.appearance.hexToUI(self.colors["Normal"]!["P"]!)
             self.navigationController.navigationBar.tintColor = self.appearance.hexToUI(self.colors["Solid"]!["White"]!)
-            self.navigationItem.setHidesBackButton(true, animated: true)
             self.navigationController.toolbar.opaque = true
             self.navigationController.toolbar.barTintColor = self.appearance.hexToUI(self.colors["Normal"]!["P"]!)
             self.navigationController.toolbarHidden = false
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.view.userInteractionEnabled = true
             self.navigationController.toolbarHidden = true
+            self.navigationItem.setHidesBackButton(true, animated: true)
+            self.navigationController.navigationBar.topItem.title = ""
+            self.navigationItem.title = "Tags"
             self.mainTabBar.barTintColor = self.appearance.hexToUI(self.colors["Normal"]!["P"]!)
             self.mainTabBar.selectedImageTintColor = UIColor.whiteColor()
             self.mainTabBar.selectedItem = self.mainTabBar.items[1] as UITabBarItem
@@ -123,6 +121,8 @@ class TagsController:GAITrackedViewController, UICollectionViewDataSource, UICol
             allEvents.tag = "All"
             self.navigationController.pushViewController(allEvents, animated: false)
         case "Tags":
+            break
+            //Don't reload the entire class
             var tagsController:TagsController = self.storyboard.instantiateViewControllerWithIdentifier("tags") as TagsController
             tagsController.user = user!
             self.navigationController.pushViewController(tagsController, animated: false)

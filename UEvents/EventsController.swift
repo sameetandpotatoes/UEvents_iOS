@@ -54,11 +54,15 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.refreshControl.beginRefreshing()
             self.staticDateText.textColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             if self.tag == "All" {
+                self.navigationItem.setHidesBackButton(true, animated: true)
+                self.navigationController.navigationBar.topItem.title = ""
                 self.navigationItem.title = "All Events"
                 self.mainTabBar.selectedItem = self.mainTabBar.items[0] as UITabBarItem
                 self.api.allEventsP = self
                 self.api.getEvents()
             } else if self.tag == "User" {
+                self.navigationItem.setHidesBackButton(true, animated: true)
+                self.navigationController.navigationBar.topItem.title = ""
                 self.navigationItem.title = "\(self.user!.firstName)'s Events"
                 self.api.userEventsP = self
                 self.mainTabBar.selectedItem = self.mainTabBar.items[2] as UITabBarItem
@@ -87,18 +91,15 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.navigationController.navigationBar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             self.navigationController.navigationBar.tintColor = self.appearance.hexToUI(self.c["Solid"]!["White"]!)
-//            self.navigationController.toolbar.opaque = true
             self.navigationController.toolbar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
-
             self.navigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
-            self.navigationItem.setHidesBackButton(true, animated: true)
             self.navigationController.interactivePopGestureRecognizer.enabled = false;
             self.view.userInteractionEnabled = true
-
             self.navigationController.toolbarHidden = true
             
             self.mainTabBar.barTintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
             self.mainTabBar.selectedImageTintColor = UIColor.whiteColor()
+            
             //Swipe Up to Refresh
             self.refreshControl = UIRefreshControl()
             self.refreshControl.attributedTitle = NSAttributedString(string: "Refreshing Events")
