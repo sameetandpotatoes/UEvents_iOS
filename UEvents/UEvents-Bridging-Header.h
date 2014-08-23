@@ -12,7 +12,6 @@
 #import <Appirater/Appirater.h>
 #import <UIKit/UIKit.h>
 #import <CoreImage/CoreImage.h>
-#import "PageContentViewController.h"
 
 #import <UNIRest.h>
 #import <SVProgressHUD/SVProgressHUD.h>

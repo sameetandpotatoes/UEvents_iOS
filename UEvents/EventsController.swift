@@ -105,6 +105,8 @@ class EventsController: GAITrackedViewController, UITableViewDataSource, UITable
             self.refreshControl.attributedTitle = NSAttributedString(string: "Refreshing Events")
             self.refreshControl.addTarget(self, action: "refresh:", forControlEvents: UIControlEvents.ValueChanged)
             self.appsTableView!.addSubview(self.refreshControl)
+            //when coming from tutorial pages, this messed up margin
+//            self.view.frame = CGRectMake(0,0,self.appearance.width, self.appearance.height)
         })
     }
     func didReceiveAllEvents(results: Array<NSObject>) {

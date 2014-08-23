@@ -83,10 +83,49 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
         
         /*
             Event Attending and Tag Holder frames are changing, so we need to
-            update the the CALayers that correspond to these UILabels or UIViews.
+            update the the CALayers (gray borders) that correspond to these 
+            UILabels or UIViews.
         */
         attendingLayer = appearance.addBottomBorder(self.eventAttending!)
         tagLayer = appearance.addBottomBorder(self.tagHolder)
+    }
+    func fixSelectedSegment(){
+        var numSegments:Int = self.rsvpSegButtons!.subviews.count
+        for var i = 0; i < numSegments; i++ {
+            (self.rsvpSegButtons!.subviews[i] as UIView).tintColor = nil
+            (self.rsvpSegButtons!.subviews[i] as UIView).tintColor = self.appearance.hexToUI(self.c["Solid"]!["Gray"]!)
+        }
+        var sortedViews = self.rsvpSegButtons!.subviews
+        sortedViews = sortedViews.sorted {
+            var v1:CGFloat = ($0 as UIView).frame.origin.x
+            var v2:CGFloat = ($1 as UIView).frame.origin.x
+            if v1 < v2{
+                return NSComparisonResult.OrderedDescending
+            } else if v1 > v2{
+                return NSComparisonResult.OrderedAscending
+            } else{
+                return NSComparisonResult.OrderedSame
+        }
+        (sortedViews[self.rsvpSegButtons!.selectedSegmentIndex] as UIView).tintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
+        for view in self.rsvpSegButtons!.subviews{
+            view.removeFromSuperview()
+        }
+        for view in sortedViews{
+            self.rsvpSegButtons!.addSubview(view as UIView)
+        }
+    }
+    func compareViewsByOrigin(sp1: AnyObject!, sp2: AnyObject!, context: Void) -> NSComparisonResult{
+        // UISegmentedControl segments use UISegment objects (private API). Then we can safely
+        //   cast them to UIView objects.
+        var v1:CGFloat = (sp1 as UIView).frame.origin.x
+        var v2:CGFloat = (sp2 as UIView).frame.origin.x
+        if v1 < v2{
+            return NSComparisonResult.OrderedDescending
+        } else if v1 > v2{
+            return NSComparisonResult.OrderedAscending
+        } else{
+            return NSComparisonResult.OrderedSame
+        }
     }
     func updateView(){
         dispatch_async(dispatch_get_main_queue()) {
@@ -99,14 +138,9 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             var customFont:UIFont = UIFont(name: "HelveticaNeue", size: 16.0)
             //Change font and non-selected segment text color
             self.rsvpSegButtons!.setTitleTextAttributes([NSForegroundColorAttributeName : self.appearance.hexToUI(self.c["Normal"]!["P"]!), NSFontAttributeName : customFont], forState: UIControlState.Normal)
-//            self.rsvpSegButtons!.setTitleTextAttributes([NSBackgroundColorAttributeName : self.appearance.hexToUI(self.c["Normal"]!["P"]!)], forState: UIControlState.Selected)
-            //Change background color of selected segment
-//            for subview in self.rsvpSegButtons!.subviews{
-//                if (subview.isKindOfClass(UIControl)){
-//                    println("Found selected")
-//                    (subview as UIView).tintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
-//                }
-//            }
+            
+            //fix selected segment color in UISegmentedControl
+            self.fixSelectedSegment()
             self.navigationController.toolbarHidden = true
             self.scrollView!.scrollEnabled = true
             

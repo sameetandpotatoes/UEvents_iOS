@@ -25,7 +25,7 @@ class TutorialController:GAITrackedViewController, UIPageViewControllerDataSourc
         var startingViewController:TutorialPageContent = self.viewControllerAtIndex(0)!
         var viewControllers:NSArray = [startingViewController]
         self.pageViewController.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: nil)
-        self.pageViewController.view.frame = CGRectMake(0, 0, appearanceController.width, appearanceController.height + 40)
+        self.pageViewController.view.frame = CGRectMake(0, 0, appearanceController.width, appearanceController.height)
         self.addChildViewController(pageViewController)
         self.view.addSubview(pageViewController.view)
         self.pageViewController.didMoveToParentViewController(self)
@@ -36,7 +36,7 @@ class TutorialController:GAITrackedViewController, UIPageViewControllerDataSourc
     }
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.screenName = "Login"
+        self.screenName = "Tutorial Pages"
     }
     override func shouldAutorotate() -> Bool {
         return appearanceController.isIPAD()

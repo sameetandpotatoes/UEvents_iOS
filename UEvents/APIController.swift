@@ -101,7 +101,7 @@ class APIController: NSObject {
         var error: AutoreleasingUnsafeMutablePointer<NSError?> = nil
         var jsonObject:AnyObject! = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: error)
         
-        if !jsonObject.isEqual(nil){
+        if jsonObject != nil{
             if allEvents == connection || filter == connection{
                 if let nsDict = jsonObject as? NSDictionary{
                     if let swiftDict = nsDict as Dictionary?{
@@ -124,7 +124,8 @@ class APIController: NSObject {
                 schoolsP!.didReceiveSchools(schoolsArray)
             }
         } else{
-            //Already handled error if connection failed
+            var alert:UIAlertView = UIAlertView(title: "Error Retrieving Events", message: "Please check your internet connection and try again.", delegate: self, cancelButtonTitle: "Ok")
+            alert.show()
         }
         var objectEvents:Array<NSObject> = []
         formatDate()

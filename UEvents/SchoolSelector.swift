@@ -46,6 +46,8 @@ class SchoolSelector: GAITrackedViewController, UITableViewDataSource, UITableVi
             self.navigationController.toolbar.opaque = true
             self.navigationController.toolbar.barTintColor = self.appearanceController.hexToUI(self.colors["Normal"]!["P"]!)
             self.navigationController.toolbarHidden = true
+            //to adjust for the full screen pages (this messed up the layouting for some reason
+            self.view.frame = CGRectMake(0,0,self.appearanceController.width, self.appearanceController.height)
         }
     }
     func didReceiveSchools(results: NSArray) {

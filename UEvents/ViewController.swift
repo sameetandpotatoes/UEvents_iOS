@@ -74,7 +74,7 @@ class ViewController: GAITrackedViewController, UIPageViewControllerDataSource, 
         //Gets appropriate image and title associated with page
         pageContentViewController.imageFile = pageImages[index] as NSString
         pageContentViewController.titleText = pageTitles[index] as NSString
-        pageContentViewController.pageIndex = UInt(index)
+        pageContentViewController.pageIndex = index
         return pageContentViewController
     }
 }

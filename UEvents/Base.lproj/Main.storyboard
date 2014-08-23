@@ -593,53 +593,48 @@
                                     <imageView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="4XZ-t4-sYG">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                     </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R3L-VY-nwb">
+                                        <rect key="frame" x="196" y="272" width="207" height="56"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="56" id="BNH-ZL-NHP"/>
+                                            <constraint firstAttribute="width" constant="207" id="W4T-mu-t1x"/>
+                                        </constraints>
+                                        <state key="normal" title="Ok, got it.">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="okButton:" destination="lKD-9f-rRP" eventType="touchUpInside" id="nVB-6k-zZE"/>
+                                        </connections>
+                                    </button>
                                     <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="Vj0-JG-hhn">
-                                        <rect key="frame" x="281" y="532" width="39" height="37"/>
+                                        <rect key="frame" x="280" y="527" width="39" height="37"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="39" id="pRG-4o-S2m"/>
+                                        </constraints>
                                     </pageControl>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="4XZ-t4-sYG" firstAttribute="leading" secondItem="GpZ-MW-UzM" secondAttribute="leading" id="FvD-RV-Gd7"/>
-                                    <constraint firstAttribute="bottom" secondItem="4XZ-t4-sYG" secondAttribute="bottom" id="GQ4-uL-onr"/>
-                                    <constraint firstAttribute="trailing" secondItem="4XZ-t4-sYG" secondAttribute="trailing" id="M8a-qT-uSX"/>
-                                    <constraint firstItem="Vj0-JG-hhn" firstAttribute="leading" secondItem="GpZ-MW-UzM" secondAttribute="leading" constant="281" id="SRt-cV-Aln"/>
-                                    <constraint firstAttribute="bottom" secondItem="Vj0-JG-hhn" secondAttribute="bottom" constant="31" id="b0v-Q9-fwp"/>
-                                    <constraint firstAttribute="centerX" secondItem="4XZ-t4-sYG" secondAttribute="centerX" id="gdA-tq-pTG"/>
-                                    <constraint firstItem="Vj0-JG-hhn" firstAttribute="centerX" secondItem="4XZ-t4-sYG" secondAttribute="centerX" id="i5Z-b1-US2"/>
-                                    <constraint firstAttribute="trailing" secondItem="Vj0-JG-hhn" secondAttribute="trailing" constant="280" id="iFP-6J-4by"/>
-                                    <constraint firstItem="4XZ-t4-sYG" firstAttribute="top" secondItem="GpZ-MW-UzM" secondAttribute="top" id="l3t-6w-tAr"/>
+                                    <constraint firstAttribute="centerY" secondItem="R3L-VY-nwb" secondAttribute="centerY" id="0rf-lw-JO8"/>
+                                    <constraint firstItem="4XZ-t4-sYG" firstAttribute="leading" secondItem="GpZ-MW-UzM" secondAttribute="leading" id="6EL-Xh-CtK"/>
+                                    <constraint firstItem="Vj0-JG-hhn" firstAttribute="centerX" secondItem="R3L-VY-nwb" secondAttribute="centerX" id="Alg-Ri-UDN"/>
+                                    <constraint firstAttribute="centerX" secondItem="R3L-VY-nwb" secondAttribute="centerX" id="Ts4-AF-sux"/>
+                                    <constraint firstAttribute="bottom" secondItem="Vj0-JG-hhn" secondAttribute="bottom" constant="36" id="XWD-L0-Ab3"/>
+                                    <constraint firstAttribute="centerX" secondItem="4XZ-t4-sYG" secondAttribute="centerX" id="cY7-mF-kxu"/>
+                                    <constraint firstAttribute="trailing" secondItem="4XZ-t4-sYG" secondAttribute="trailing" id="nNO-SK-fdI"/>
+                                    <constraint firstItem="4XZ-t4-sYG" firstAttribute="top" secondItem="GpZ-MW-UzM" secondAttribute="top" id="weM-i8-g87"/>
+                                    <constraint firstAttribute="bottom" secondItem="4XZ-t4-sYG" secondAttribute="bottom" id="yIl-pt-HZQ"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R3L-VY-nwb">
-                                <rect key="frame" x="197" y="272" width="207" height="56"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="207" id="rfD-65-4nO"/>
-                                </constraints>
-                                <state key="normal" title="Ok, got it.">
-                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="okButton:" destination="lKD-9f-rRP" eventType="touchUpInside" id="nVB-6k-zZE"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="R3L-VY-nwb" firstAttribute="top" secondItem="LTk-sE-VBK" secondAttribute="bottom" constant="252" id="0vk-OT-zl4"/>
-                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="top" secondItem="5PV-HZ-VcX" secondAttribute="topMargin" id="450-If-w3u"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="GpZ-MW-UzM" secondAttribute="trailing" constant="-16" id="E0Z-xN-j6V"/>
-                            <constraint firstItem="M7u-Tp-g85" firstAttribute="top" secondItem="GpZ-MW-UzM" secondAttribute="bottom" id="Fh0-nM-LfH"/>
-                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="leading" secondItem="5PV-HZ-VcX" secondAttribute="leadingMargin" constant="-16" id="IhW-jh-6Lq"/>
-                            <constraint firstAttribute="centerX" secondItem="GpZ-MW-UzM" secondAttribute="centerX" id="LBw-nI-pRs"/>
-                            <constraint firstItem="M7u-Tp-g85" firstAttribute="top" secondItem="GpZ-MW-UzM" secondAttribute="bottom" id="WWm-45-NjZ"/>
-                            <constraint firstAttribute="centerY" secondItem="GpZ-MW-UzM" secondAttribute="centerY" id="XKz-mb-Q84"/>
-                            <constraint firstItem="R3L-VY-nwb" firstAttribute="centerX" secondItem="LTk-sE-VBK" secondAttribute="centerX" id="Zmb-nb-ud9"/>
-                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="bottom" secondItem="M7u-Tp-g85" secondAttribute="top" id="fen-cv-SWs"/>
-                            <constraint firstItem="R3L-VY-nwb" firstAttribute="centerY" secondItem="GpZ-MW-UzM" secondAttribute="centerY" id="gv3-pK-5xb"/>
-                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="trailing" secondItem="LTk-sE-VBK" secondAttribute="trailing" id="iG2-h8-msf"/>
-                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="leading" secondItem="LTk-sE-VBK" secondAttribute="leading" id="wbo-Qi-aOU"/>
-                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="top" secondItem="5PV-HZ-VcX" secondAttribute="topMargin" id="yUL-Zo-I2f"/>
+                            <constraint firstItem="M7u-Tp-g85" firstAttribute="top" secondItem="GpZ-MW-UzM" secondAttribute="bottom" id="Grv-Fc-Uvc"/>
+                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="leading" secondItem="M7u-Tp-g85" secondAttribute="leading" id="ULq-0y-eru"/>
+                            <constraint firstAttribute="centerX" secondItem="GpZ-MW-UzM" secondAttribute="centerX" id="UjV-4k-Xq5"/>
+                            <constraint firstItem="GpZ-MW-UzM" firstAttribute="top" secondItem="5PV-HZ-VcX" secondAttribute="top" id="UqQ-WN-dGT"/>
+                            <constraint firstAttribute="centerY" secondItem="GpZ-MW-UzM" secondAttribute="centerY" id="siR-TZ-SjT"/>
                         </constraints>
                     </view>
                     <connections>
@@ -675,7 +670,7 @@
         <!--Page Content View Controller-->
         <scene sceneID="7cS-Xr-l9E">
             <objects>
-                <viewController storyboardIdentifier="PageContentViewController" modalTransitionStyle="crossDissolve" id="RD6-ql-tIs" customClass="PageContentViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PageContentViewController" modalTransitionStyle="crossDissolve" id="RD6-ql-tIs" customClass="PageContentViewController" customModule="UEvents" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RIM-Fd-8sd"/>
                         <viewControllerLayoutGuide type="bottom" id="2V9-Ey-0Mu"/>
@@ -703,7 +698,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="buttonClickHandler:" destination="RD6-ql-tIs" eventType="touchUpInside" id="1Vm-JP-JgL"/>
+                                            <action selector="buttonClicked:" destination="RD6-ql-tIs" eventType="touchUpInside" id="IjU-uL-DZU"/>
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LaunchLogo" translatesAutoresizingMaskIntoConstraints="NO" id="qgw-1t-yd6">

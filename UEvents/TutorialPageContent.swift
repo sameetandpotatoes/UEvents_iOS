@@ -16,7 +16,7 @@ class TutorialPageContent:GAITrackedViewController{
     var user:User!
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.pageControl.currentPage = pageIndex
         self.backgroundImageView!.frame = CGRectMake(0, 0, UIScreen.mainScreen().bounds.size.width, UIScreen.mainScreen().bounds.size.height)
         self.backgroundImageView!.image = UIImage(named: self.imageFile)
         self.backgroundImageView!.backgroundColor = UIColor.whiteColor()
