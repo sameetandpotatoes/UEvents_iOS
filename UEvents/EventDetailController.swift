@@ -95,24 +95,25 @@ class EventDetailController: GAITrackedViewController, UIScrollViewDelegate{
             (self.rsvpSegButtons!.subviews[i] as UIView).tintColor = nil
             (self.rsvpSegButtons!.subviews[i] as UIView).tintColor = self.appearance.hexToUI(self.c["Solid"]!["Gray"]!)
         }
-        var sortedViews = self.rsvpSegButtons!.subviews
-        sortedViews = sortedViews.sorted {
-            var v1:CGFloat = ($0 as UIView).frame.origin.x
-            var v2:CGFloat = ($1 as UIView).frame.origin.x
-            if v1 < v2{
-                return NSComparisonResult.OrderedDescending
-            } else if v1 > v2{
-                return NSComparisonResult.OrderedAscending
-            } else{
-                return NSComparisonResult.OrderedSame
-        }
-        (sortedViews[self.rsvpSegButtons!.selectedSegmentIndex] as UIView).tintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
-        for view in self.rsvpSegButtons!.subviews{
-            view.removeFromSuperview()
-        }
-        for view in sortedViews{
-            self.rsvpSegButtons!.addSubview(view as UIView)
-        }
+//        var sortedViews = self.rsvpSegButtons!.subviews
+//        sortedViews = sortedViews.sorted {
+//            var v1:CGFloat = ($0 as UIView).frame.origin.x
+//            var v2:CGFloat = ($1 as UIView).frame.origin.x
+//            if v1 < v2{
+//                return NSComparisonResult.OrderedDescending
+//            } else if v1 > v2{
+//                return NSComparisonResult.OrderedAscending
+//            } else{
+//                return NSComparisonResult.OrderedSame
+//            }
+//        }
+//        (sortedViews[self.rsvpSegButtons!.selectedSegmentIndex] as UIView).tintColor = self.appearance.hexToUI(self.c["Normal"]!["P"]!)
+//        for view in self.rsvpSegButtons!.subviews{
+//            view.removeFromSuperview()
+//        }
+//        for view in sortedViews{
+//            self.rsvpSegButtons!.addSubview(view as UIView)
+//        }
     }
     func compareViewsByOrigin(sp1: AnyObject!, sp2: AnyObject!, context: Void) -> NSComparisonResult{
         // UISegmentedControl segments use UISegment objects (private API). Then we can safely

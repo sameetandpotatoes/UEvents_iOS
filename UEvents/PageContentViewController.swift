@@ -55,23 +55,17 @@ class PageContentViewController:GAITrackedViewController{
         //here is the scaled image which has been changed to the size specified
         UIGraphicsEndImageContext();
         
-        //This is just copied from buttonClicked - I'm sure you can just call this yourself to be DRY
+        //Revert to v1 of API - will be changed (removed) in December 2014
+//        FBSettings.enablePlatformCompatibility(true)
         var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        if (appDelegate.session != nil && appDelegate.session!.isOpen){
-            println("Closed session")
-            appDelegate.session!.closeAndClearTokenInformation()
-        } else{
-            if appDelegate.session == nil || appDelegate.session!.state != FBSessionState.Created{
-                println("New session")
-                appDelegate.session = FBSession()
-            }
+        if FBSession.activeSession().accessTokenData.accessToken != ""{
+            appDelegate.session = FBSession.activeSession()
             appDelegate.session!.openWithCompletionHandler({ (session: FBSession!, status: FBSessionState, error: NSError!) in
                 //Logged in, so let's go
                 println("Logged in")
                 self.updateView()
             })
         }
-//        self.buttonClicked(nil)
     }
     func updateView(){
         var appDelegate:AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -88,6 +82,7 @@ class PageContentViewController:GAITrackedViewController{
                     var result = NSJSONSerialization.JSONObjectWithData(response.rawBody, options: NSJSONReadingOptions.MutableLeaves, error: nil) as NSDictionary
                     self.model = User(user: result)
                     println("Got the user's info!")
+                    println("Hello \(self.model.firstName)")
                     self.model.accessToken = appDelegate.session!.accessTokenData.accessToken
                     if self.createUser(){
                         println("Going to all events")
@@ -136,7 +131,7 @@ class PageContentViewController:GAITrackedViewController{
         payload.setObject(self.model.accessToken, forKey: "access_token")
         payload.setObject("", forKey: "school_id")
         payload.setObject("", forKey: "user")
-        
+        println("Payload \(payload)")
         var response:UNIHTTPJsonResponse = UNIRest.postEntity { (request: UNIBodyRequest!) -> Void in
             request.url = self.env.getPostUserURL()
             request.headers = headers

@@ -11,7 +11,7 @@ import Foundation
 class ENVRouter: NSObject{
 //    var localENV:String = "http://uevents.192.168.1.75.xip.io:20559/"
     var localENV:String = "http://localhost:3000/"
-    var prodENV:String = "http://www.uevents.io/"
+    var prodENV:String = "http://uevents-staging.herokuapp.com/"
     var eventsURL:String = "api/v2/events.json"
     var userEventsURL:String = "api/v2/events/user.json"
     var postUserURL:String = "api/v2/users"
@@ -27,12 +27,12 @@ class ENVRouter: NSObject{
     * @return url depending on user environment
     */
     func getENV() -> String{
-//        if UIDevice.currentDevice().model == "iPhone Simulator" {
-//            return localENV
-//        } else{
-//            return prodENV
-//        }
-        return localENV
+        if UIDevice.currentDevice().model == "iPhone Simulator" {
+            return localENV
+        } else{
+            return prodENV
+        }
+//        return localENV
     }
     func getSingleEventURL(eventId: String, eventStatus: String) -> String{
         return getENV() + singleEventURL + "\(eventId)/\(eventStatus)" + getAuthToken()
